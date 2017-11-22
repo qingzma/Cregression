@@ -131,7 +131,7 @@ markers_matplotlib = ['*', '1', 'v', 'o', 'h', 'X']
 
 
 class ClientClass:
-    def __init__(self, logger_name=None, base_models=None, ensemble_models=None):
+    def __init__(self, logger_name=None, base_models=None, ensemble_models=None,classifier_type="xgboost",b_show_plot=False):
         """
 
         Parameters
@@ -161,17 +161,22 @@ class ClientClass:
         self.classifier = None
         self.time_cost_to_train_base_models = []
         self.time_cost_to_train_ensemble_models = []
-        self.summary = dt.CPMstatistics()
+        self.summary = dt.CPMstatistics(logger_name=logger_name)
 
-        if logger_name != None:
+        if logger_name is not None:
             self.logger = logging.getLogger(logger_name)
+            self.logger_name = logger_name
         else:
             self.logger = logging
             self.logger.basicConfig(level=logging.DEBUG,
                                     format='%(levelname)s - %(message)s')
+            self.logger_name = None
 
         self.input_base_models = base_models
         self.input_ensemble_models = ensemble_models
+
+        self.classifier_type = classifier_type
+        self.b_show_plot = b_show_plot
 
 
         # logging.basicConfig(level=logging.ERROR)
@@ -582,7 +587,6 @@ class ClientClass:
 
         if self.input_base_models is not None:
             self.input_base_models = list(self.input_base_models)
-            self.logger.info(self.input_base_models)
         else:
             self.input_base_models = ["sklearn_linear", "sklearn_poly"]
 
@@ -1093,6 +1097,7 @@ class ClientClass:
         testing_data = testing_data  # .get_before(300000)
 
         statistics = self.summary
+        statistics.file_name = data.file
         statistics.num_of_instances = len(data)
 
         # deploy all models
@@ -1118,8 +1123,15 @@ class ClientClass:
         # select the best classifier
         # classifier, NRMSE_classifier_selection, time_cost_to_select_classifiers, time_cost_to_train_the_best_classifier = client.select_classifiers(
         #    training_data_classifier, y_classifier, testing_data)
-        classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
-                                                                                   y_classifier)
+        if self.classifier_type is 'xgboost':
+            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(training_data_classifier,
+                                                                                               y_classifier)
+        if self.classifier_type is 'linear':
+            classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
+                                                                                               y_classifier)
+        if self.classifier_type is 'rbf':
+            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
+                                                                                       y_classifier)
         time_train_CPM = datetime.now()
 
         statistics.s_training_time_all_models.append((
@@ -1192,10 +1204,8 @@ class ClientClass:
         # vispy_plt.matplotlib_plot_2D(predictions_classified, b_show_division_boundary=True, b_show_god_classifier=True,
         #                             y_classifier=y_classifier)
 
-        self.matplotlib_plot_2D(predictions_classified)
-
-        # client.matplotlib_plot_3D(predictions_classified)
-        # client.matplotlib_plot_3D_decision_boundary(predictions_classified)
+        if self.b_show_plot:
+            self.matplotlib_plot_2D(predictions_classified)
 
         return statistics
 
@@ -1236,8 +1246,16 @@ class ClientClass:
         # select the best classifier
         # classifier, NRMSE_classifier_selection, time_cost_to_select_classifiers, time_cost_to_train_the_best_classifier = client.select_classifiers(
         #    training_data_classifier, y_classifier, testing_data)
-        classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(training_data_classifier,
-                                                                                           y_classifier)
+        if self.classifier_type is 'xgboost':
+            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(training_data_classifier,
+                                                                                               y_classifier)
+        if self.classifier_type is 'linear':
+            classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
+                                                                                               y_classifier)
+        if self.classifier_type is 'rbf':
+            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
+                                                                                       y_classifier)
+
         time_train_CPM = datetime.now()
 
         statistics.s_training_time_all_models.append((
@@ -1312,14 +1330,14 @@ class ClientClass:
         # vispy_plt.matplotlib_plot_2D(predictions_classified, b_show_division_boundary=True, b_show_god_classifier=True,
         #                             y_classifier=y_classifier)
 
-        # client.matplotlib_plot_2D(predictions_classified)
 
-        self.matplotlib_plot_3D(predictions_classified)
+        if self.b_show_plot:
+            self.matplotlib_plot_3D(predictions_classified)
         # client.matplotlib_plot_3D_decision_boundary(predictions_classified)
 
         return statistics
 
-    def run_all_features(self, data, logger_name=None):
+    def run_all_features(self, data):
 
         # data.remove_repeated_x_2d()
 
@@ -1357,8 +1375,15 @@ class ClientClass:
         # select the best classifier
         # classifier, NRMSE_classifier_selection, time_cost_to_select_classifiers, time_cost_to_train_the_best_classifier = client.select_classifiers(
         #    training_data_classifier, y_classifier, testing_data)
-        classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(training_data_classifier,
-                                                                                           y_classifier)
+        if self.classifier_type is 'xgboost':
+            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(training_data_classifier,
+                                                                                               y_classifier)
+        if self.classifier_type is 'linear':
+            classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
+                                                                                               y_classifier)
+        if self.classifier_type is 'rbf':
+            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
+                                                                                       y_classifier)
         time_train_CPM = datetime.now()
 
         statistics.s_training_time_all_models.append((
@@ -1439,13 +1464,6 @@ class ClientClass:
         # client.matplotlib_plot_3D_decision_boundary(predictions_classified)
 
         return statistics
-
-    def test_logger(self):
-
-        self.logger.info("info in cc")
-        self.logger.debug("debug in cc")
-        self.logger.error('error in cc')
-        self.logger.critical("critical in cc")
 
 
 # -------------------------------------------------------------------------------------------------

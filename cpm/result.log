@@ -1,22 +1,26 @@
-INFO - Start querying to sklearn_linear.
-INFO - Total time spent: 0.03 s.
-INFO - --------------------------------------------------------------------------------------------
-INFO - Start querying to sklearn_poly.
-INFO - Total time spent: 0.13 s.
-INFO - --------------------------------------------------------------------------------------------
-INFO - Start querying to sklearn_linear.
-INFO - Total time spent: 0.03 s.
-INFO - --------------------------------------------------------------------------------------------
-INFO - Start querying to sklearn_poly.
-INFO - Total time spent: 0.13 s.
-INFO - --------------------------------------------------------------------------------------------
-INFO - Start querying to Classified Prediction System.
-INFO - Queries are classified into 2 categories:  
-INFO - Counts are: [1515    0].
-INFO - --------------------------------------------------------------------------------------------
-INFO - Start querying to sklearn_gradient_tree_boosting.
-INFO - Total time spent: 0.07 s.
-INFO - --------------------------------------------------------------------------------------------
-INFO - Start querying to xgboost.
-INFO - Total time spent: 0.29 s.
-INFO - --------------------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+Dataset: 5Folds5x2_pp.csv
+Calculation Summary:
+-----------------------------------------------------------------------------------------------------------
+Model: ['sklearn_linear', 'sklearn_poly', 'Classified Prediction Method', 'sklearn_gradient_tree_boosting', 'xgboost']
+NRMSE: [0.21897839310388417, 0.21875644682375331, 0.21917707246459878, 0.21868842571669234, 0.22173294087768644]
+Normalised NRMSE: [0.9990935212407005, 0.99808088667251726, 1.0, 0.99777053894181666, 1.01166120335648]
+The lower boundary of the NRMSE is: 0.21213091195
+
+Time cost (seconds) to train the models: [0.000821, 0.001232, 0.201117, 0.014795, 0.015504]
+Time cost (seconds) to train the linear classifier is: 0.020375
+Classifier accuracy is 0.538613861386
+
+Average time cost(ms)  on the classifier is: 0.0990158415842
+Average time (ms) to process the queries is: [0.024910231023102313, 0.08972871287128713, 0.1758963696369637, 0.05046600660066007, 0.1928792079207921]
+Total time cost(s) to process queries of each model: [0.037739, 0.135939, 0.266483, 0.076456, 0.292212]
+Number of instances in the testing dataset is 1515
+Number of instances in the dataset is 4546
+
+Program ended! Time cost is 1 s.
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------

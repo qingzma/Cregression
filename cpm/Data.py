@@ -14,6 +14,7 @@ from pyspark.mllib.regression import LabeledPoint
 from ClientClass import CPM_name
 ##import findspark
 ##findspark.init()
+import logging
 
 from vispy.color import ColorArray
 
@@ -40,7 +41,8 @@ markers_matplotlib = ['*', '1', 'v', 'o', 'h', '.', ',', '^', '<', '>', '2', '3'
 class CPMstatistics:
     '''Store the final prediction results, the NRMSEs of different models, etc.'''
 
-    def __init__(self):
+    def __init__(self, logger_name=None):
+        self.file_name=None
         self.s_model_headers = []
         self.s_training_time_all_models = []  # include training time for both base models and ensemble methods
         # self.model_names_deployed = []
@@ -63,6 +65,13 @@ class CPMstatistics:
         self.num_of_instances_in_testing_dataset = None
         self.num_of_instances = None
         self.time_program = None
+        self.logger_name = logger_name
+        if logger_name is not None:
+            self.logger = logging.getLogger(logger_name)
+            # else:
+            #     self.logger = logging
+            #     # self.logger.basicConfig(level=logging.DEBUG,
+            #     #                         format='%(levelname)s - %(message)s')
 
     def ratio(self):
         index = self.s_model_headers.index(CPM_name)
@@ -72,41 +81,90 @@ class CPMstatistics:
         return ratios
 
     def print_summary(self):
-        print(
-            "-----------------------------------------------------------------------------------------------------------")
-        print(
-            "-----------------------------------------------------------------------------------------------------------")
-        print('Calculation Summary:')
-        print(
-            "-----------------------------------------------------------------------------------------------------------")
-        print("Model: " + str(self.s_model_headers))
-        print("NRMSE: " + str(self.NRMSE))
-        print("Normalised NRMSE: " + str(self.ratio()))
-        print("The lower boundary of the NRMSE is: " + str(self.NRMSE_ideal))
-        print()
+        if self.logger_name is not None:
+            self.logger.critical("")
+            self.logger.critical("")
+            self.logger.critical("")
+            self.logger.critical(
+                '-----------------------------------------------------------------------------------------------------------')
+            self.logger.critical(
+                "-----------------------------------------------------------------------------------------------------------")
+            self.logger.critical("Dataset: "+self.file_name)
+            self.logger.critical('Calculation Summary:')
+            self.logger.critical(
+                "-----------------------------------------------------------------------------------------------------------")
+            self.logger.critical("Model: " + str(self.s_model_headers))
+            self.logger.critical("NRMSE: " + str(self.NRMSE))
+            self.logger.critical("Normalised NRMSE: " + str(self.ratio()))
+            self.logger.critical("The lower boundary of the NRMSE is: " + str(self.NRMSE_ideal))
+            self.logger.critical("")
 
-        print("Time cost (seconds) to train the models: " + str(self.s_training_time_all_models))
-        if self.time_training_classifiers != "None! The classifier selection process is not enabled! ":
-            print("Time cost (seconds) to train the classifiers: " + str(self.time_training_classifiers))
-            print("The best classifier is: " + self.classifier_name)
-            print("Time cost (seconds) to train the best classifier is: " + str(self.time_training_classifier))
+            self.logger.critical("Time cost (seconds) to train the models: " + str(self.s_training_time_all_models))
+            if self.time_training_classifiers != "None! The classifier selection process is not enabled! ":
+                self.logger.critical(
+                    "Time cost (seconds) to train the classifiers: " + str(self.time_training_classifiers))
+                self.logger.critical("The best classifier is: " + self.classifier_name)
+                self.logger.critical(
+                    "Time cost (seconds) to train the best classifier is: " + str(self.time_training_classifier))
+            else:
+                self.logger.critical(
+                    "Time cost (seconds) to train the linear classifier is: " + str(self.time_training_classifier))
+                self.logger.critical("Classifier accuracy is " + str(self.classifier_accuracy))
+                self.logger.critical("")
+
+            self.logger.critical(
+                "Average time cost(ms)  on the classifier is: " + str(self.time_query_execution_on_classifier))
+            self.logger.critical(
+                "Average time (ms) to process the queries is: " + str(self.time_average_query_processing_of_all_models))
+            self.logger.critical(
+                "Total time cost(s) to process queries of each model: " + str(self.time_query_processing_all_models))
+            self.logger.critical(
+                "Number of instances in the testing dataset is " + str(self.num_of_instances_in_testing_dataset))
+            self.logger.critical("Number of instances in the dataset is " + str(self.num_of_instances))
+            self.logger.critical("")
+
+            self.logger.critical("Program ended! Time cost is " + str(self.time_program) + " s.")
+            self.logger.critical(
+                "-----------------------------------------------------------------------------------------------------------")
+            self.logger.critical(
+                "-----------------------------------------------------------------------------------------------------------")
         else:
-            print("Time cost (seconds) to train the linear classifier is: " + str(self.time_training_classifier))
-        print("Classifier accuracy is " + str(self.classifier_accuracy))
-        print()
+            print(
+                "-----------------------------------------------------------------------------------------------------------")
+            print(
+                "-----------------------------------------------------------------------------------------------------------")
+            print('Calculation Summary:')
+            print(
+                "-----------------------------------------------------------------------------------------------------------")
+            print("Model: " + str(self.s_model_headers))
+            print("NRMSE: " + str(self.NRMSE))
+            print("Normalised NRMSE: " + str(self.ratio()))
+            print("The lower boundary of the NRMSE is: " + str(self.NRMSE_ideal))
+            print()
 
-        print("Average time cost(ms)  on the classifier is: " + str(self.time_query_execution_on_classifier))
-        print("Average time (ms) to process the queries is: " + str(self.time_average_query_processing_of_all_models))
-        print("Total time cost(s) to process queries of each model: " + str(self.time_query_processing_all_models))
-        print("Number of instances in the testing dataset is " + str(self.num_of_instances_in_testing_dataset))
-        print("Number of instances in the dataset is " + str(self.num_of_instances))
-        print()
+            print("Time cost (seconds) to train the models: " + str(self.s_training_time_all_models))
+            if self.time_training_classifiers != "None! The classifier selection process is not enabled! ":
+                print("Time cost (seconds) to train the classifiers: " + str(self.time_training_classifiers))
+                print("The best classifier is: " + self.classifier_name)
+                print("Time cost (seconds) to train the best classifier is: " + str(self.time_training_classifier))
+            else:
+                print("Time cost (seconds) to train the linear classifier is: " + str(self.time_training_classifier))
+            print("Classifier accuracy is " + str(self.classifier_accuracy))
+            print()
 
-        print("Program ended! Time cost is " + str(self.time_program) + " s.")
-        print(
-            "-----------------------------------------------------------------------------------------------------------")
-        print(
-            "-----------------------------------------------------------------------------------------------------------")
+            print("Average time cost(ms)  on the classifier is: " + str(self.time_query_execution_on_classifier))
+            print(
+                "Average time (ms) to process the queries is: " + str(self.time_average_query_processing_of_all_models))
+            print("Total time cost(s) to process queries of each model: " + str(self.time_query_processing_all_models))
+            print("Number of instances in the testing dataset is " + str(self.num_of_instances_in_testing_dataset))
+            print("Number of instances in the dataset is " + str(self.num_of_instances))
+            print()
+
+            print("Program ended! Time cost is " + str(self.time_program) + " s.")
+            print(
+                "-----------------------------------------------------------------------------------------------------------")
+            print(
+                "-----------------------------------------------------------------------------------------------------------")
         return
 
 
@@ -221,6 +279,7 @@ class DataSource:
         self.features = []
         self.labels = []
         self.headers = []
+        self.file = None
 
     def __len__(self):
         return len(self.labels)
@@ -390,14 +449,14 @@ class DataSource:
 
         """
         import random
-        l=range(len(self.labels))
+        l = range(len(self.labels))
         random.shuffle(l)
-        features=[self.features[i] for i in l]
-        labels=[self.labels[i] for i in l]
-        features=np.asarray(features).reshape(-1, 1)
-        labels=np.asarray(labels)#.reshape(-1, 1)
-        self.features=features
-        self.labels=labels
+        features = [self.features[i] for i in l]
+        labels = [self.labels[i] for i in l]
+        features = np.asarray(features).reshape(-1, 1)
+        labels = np.asarray(labels)  # .reshape(-1, 1)
+        self.features = features
+        self.labels = labels
         # print(self.features)
         # print(self.labels)
         # exit(1)
@@ -508,6 +567,11 @@ def load_csv(filename, fields=None, y_column=None, sep=','):
         data.headers = list(np.delete(headers, [y_column]))
         data.headers.append(input.keys()[y_column])
         # print(data.headers)
+    try:
+        data.file = filename.split("/")[-1]
+    except Exception:
+        data.file = filename
+
     return data
 
 
@@ -673,7 +737,8 @@ def prepare_data8():
     print(consumptions)
 
     with open('../data/8data.txt', 'a') as f:
-        f.write('timestamp,Global_active_power,Global_reactive_power,Voltage,Global_intensity,Sub_metering_1,Sub_metering_2,Sub_metering_3,energy\n')
+        f.write(
+            'timestamp,Global_active_power,Global_reactive_power,Voltage,Global_intensity,Sub_metering_1,Sub_metering_2,Sub_metering_3,energy\n')
         for t1, y0, y1, y2, y3, y4, y5, y6, t2 in zip(ts, data1.features[:, 0], data1.features[:, 1],
                                                       data1.features[:, 2], data1.features[:, 3], data1.features[:, 4],
                                                       data1.features[:, 5], data1.features[:, 6], consumptions):
