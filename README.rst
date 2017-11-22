@@ -1,12 +1,9 @@
-Sample Module Repository
+Classified Regression
 ========================
 
-This simple project is an example repo for Python projects.
+This  project implements the classified regression method (Cregression). It is an ensemble method.
+This porject provides an interface to adopt any possible regression models written in python.
 
-`Learn more <http://www.kennethreitz.org/essays/repository-structure-and-python>`_.
-
----------------
-
-If you want to learn more about ``setup.py`` files, check out `this repository <https://github.com/kennethreitz/setup.py>`_.
+`Learn more <https://github.com/qingzma/Cregression>`_.
 
 ✨🍰✨
