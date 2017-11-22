@@ -1,0 +1,22 @@
+INFO - Start querying to sklearn_linear.
+INFO - Total time spent: 0.03 s.
+INFO - --------------------------------------------------------------------------------------------
+INFO - Start querying to sklearn_poly.
+INFO - Total time spent: 0.13 s.
+INFO - --------------------------------------------------------------------------------------------
+INFO - Start querying to sklearn_linear.
+INFO - Total time spent: 0.03 s.
+INFO - --------------------------------------------------------------------------------------------
+INFO - Start querying to sklearn_poly.
+INFO - Total time spent: 0.13 s.
+INFO - --------------------------------------------------------------------------------------------
+INFO - Start querying to Classified Prediction System.
+INFO - Queries are classified into 2 categories:  
+INFO - Counts are: [1515    0].
+INFO - --------------------------------------------------------------------------------------------
+INFO - Start querying to sklearn_gradient_tree_boosting.
+INFO - Total time spent: 0.07 s.
+INFO - --------------------------------------------------------------------------------------------
+INFO - Start querying to xgboost.
+INFO - Total time spent: 0.29 s.
+INFO - --------------------------------------------------------------------------------------------
