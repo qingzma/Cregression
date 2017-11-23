@@ -5,19 +5,20 @@ import pandas as pd
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-import run_code
+
 from sklearn import preprocessing
 
 import pyspark
 # from pyspark.sql import SparkSession
 from pyspark.mllib.regression import LabeledPoint
-from ClientClass import CPM_name
+
 ##import findspark
 ##findspark.init()
 import logging
 
 from vispy.color import ColorArray
 
+# ----------------------------------------------------------------------------------------------------------------#
 r = ColorArray('red')
 g = ColorArray((0, 1, 0, 1))
 blue = ColorArray('blue')
@@ -35,14 +36,53 @@ markers_matplotlib = ['*', '1', 'v', 'o', 'h', '.', ',', '^', '<', '>', '2', '3'
                       '*', '1', 'v', 'o', 'h', '.', ',', '^', '<', '>', '2', '3', '4', '8', 's', 'p', 'H', '+', 'D',
                       'd', '|', '_', '*', '1', 'v', 'o', 'h', '.', ',', '^', '<', '>', '2', '3', '4', '8', 's', 'p',
                       'H', '+', 'D', 'd', '|', '_']
+# ----------------------------------------------------------------------------------------------------------------#
+# parameters for the ClientClass
+app_linear = "sklearn_linear"
+model_name0 = "sklearn_linear_model"
 
+app_poly = "sklearn_poly"
+model_name1 = "sklearn_poly_model"
 
+app_knn = "sklearn_knn"
+model_name2 = "sklearn_knn_model"
+
+app_rbf = "sklearn_svr_rbf"
+model_name3 = "sklearn_svr_rbf_model"
+
+app_mllib = "mllib_regression"
+model_name4 = "mllib_lrm_SGD_model"
+
+app_gaussian = "sklearn_gaussian_process"
+model_name5 = "sklearn_gaussian_process_model"
+
+app_adaboost = "sklearn_adaboost"
+model_name6 = "sklearn_ensemble_adaboost_model"
+
+app_boosting = "sklearn_gradient_tree_boosting"
+model_name7 = "sklearn_ensemble_gradient_tree_boosting_model"
+
+app_decision_tree = "sklearn_decision_tree"
+model_name8 = "sklearn_decision_tree_model"
+
+app_xgboost = "xgboost"
+model_name9 = "xgboost_model"
+
+CPM_name = "Classified Prediction Method"
+base_model_library = ["sklearn_linear", "sklearn_poly", "sklearn_decision_tree", "sklearn_knn",
+                      "sklearn_svr_rbf", "mllib_regression", "sklearn_gaussian_process",
+                      "sklearn_adaboost", "sklearn_gradient_tree_boosting", "xgboost"]
+ensemble_model_library = ["sklearn_adaboost", "sklearn_gradient_tree_boosting", "xgboost"]
+
+classifier_linear_name = 'linear'
+classifier_rbf_name = 'rbf'
+classifier_xgboost_name = 'xgboost'
 # ----------------------------------------------------------------------------------------------------------------#
 class CPMstatistics:
     '''Store the final prediction results, the NRMSEs of different models, etc.'''
 
     def __init__(self, logger_name=None):
-        self.file_name=None
+        self.file_name = None
         self.s_model_headers = []
         self.s_training_time_all_models = []  # include training time for both base models and ensemble methods
         # self.model_names_deployed = []
@@ -53,7 +93,7 @@ class CPMstatistics:
         self.NRMSE_ideal = None
         self.classifier_selection_names = []
         self.classifier_selection_NRMSEs = []
-        self.classifier_name = 'Have not select the best classifier yet! Use the default linear SVM classifier.'
+        self.classifier_name = 'xgboost classifier (default).'
         self.classifier_accuracy = None
         # self.time_training_models = None
         self.time_training_ensemble_models = None
@@ -89,7 +129,7 @@ class CPMstatistics:
                 '-----------------------------------------------------------------------------------------------------------')
             self.logger.critical(
                 "-----------------------------------------------------------------------------------------------------------")
-            self.logger.critical("Dataset: "+self.file_name)
+            self.logger.critical("Dataset: " + self.file_name + ", classifier is: " + self.classifier_name)
             self.logger.critical('Calculation Summary:')
             self.logger.critical(
                 "-----------------------------------------------------------------------------------------------------------")
@@ -128,11 +168,15 @@ class CPMstatistics:
                 "-----------------------------------------------------------------------------------------------------------")
             self.logger.critical(
                 "-----------------------------------------------------------------------------------------------------------")
+            self.logger.critical("")
+            self.logger.critical("")
+            self.logger.critical("")
         else:
             print(
                 "-----------------------------------------------------------------------------------------------------------")
             print(
                 "-----------------------------------------------------------------------------------------------------------")
+            print("Dataset: " + self.file_name + ", classifier is: " + self.classifier_type)
             print('Calculation Summary:')
             print(
                 "-----------------------------------------------------------------------------------------------------------")
@@ -441,7 +485,7 @@ class DataSource:
             # tmp.append(strs)
         return np.array(ts)  # ,tmp
 
-    def disorder(self):
+    def disorder2d(self):
         """
         This function disorder the points, useful for time series data.
         Returns
@@ -451,7 +495,7 @@ class DataSource:
         import random
         l = range(len(self.labels))
         random.shuffle(l)
-        features = [self.features[i] for i in l]
+        features = [self.features[i,:] for i in l]
         labels = [self.labels[i] for i in l]
         features = np.asarray(features).reshape(-1, 1)
         labels = np.asarray(labels)  # .reshape(-1, 1)
@@ -461,8 +505,62 @@ class DataSource:
         # print(self.labels)
         # exit(1)
 
-        pass
+    def disorderNd(self):
+        """
+        This function disorder the points, useful for time series data.
+        Returns
+        -------
 
+        """
+        import random
+        l = range(len(self.labels))
+        random.shuffle(l)
+        features = [self.features[i,:] for i in l]
+        labels = [self.labels[i] for i in l]
+        features = np.asarray(features)#.reshape(1, -1)
+        labels = np.asarray(labels)  # .reshape(-1, 1)
+        self.features = features
+        self.labels = labels
+
+
+class Evaluation:
+    def __init__(self,clients,logger_name):
+        self.clients=clients
+        if logger_name is not None:
+            self.logger = logging.getLogger(logger_name)
+    def print_evaluation_normalised_NRMSE(self):
+        self.logger.critical('')
+        self.logger.critical("----------------------------------------------------------------------------------------")
+        self.logger.critical("Normalised NRMSE:")
+        for client in self.clients:
+            self.logger.critical(np.array2string(np.array(client.summary.ratio()),precision=4,separator=',').replace('[','').replace(']','')+', '+str(client.summary.num_of_instances))
+    def print_NRMSE(self):
+        self.logger.critical('')
+        self.logger.critical("----------------------------------------------------------------------------------------")
+        self.logger.critical("NRMSE:")
+        for client in self.clients:
+            self.logger.critical(np.array2string(np.array(client.summary.NRMSE),precision=4,separator=',').replace('[','').replace(']','')+', '+str(client.summary.NRMSE_ideal)+', '+str(client.summary.classifier_accuracy))
+    def print_time_train_models(self):
+        self.logger.critical('')
+        self.logger.critical("----------------------------------------------------------------------------------------")
+        self.logger.critical("Time to train base models (s):")
+        for client in self.clients:
+            self.logger.critical(
+            np.array2string(np.array(client.summary.s_training_time_all_models), precision=4, separator=',').replace('[', '').replace(']', '')+', '+str(client.summary.time_training_classifier))
+    def print_query_execution_time(self):
+        self.logger.critical('')
+        self.logger.critical("----------------------------------------------------------------------------------------")
+        self.logger.critical("Average query execution time (ms):")
+        for client in self.clients:
+            self.logger.critical(
+            np.array2string(np.array(client.summary.time_average_query_processing_of_all_models), precision=4, separator=',').replace('[', '').replace(']', '')+', '+str(client.summary.time_query_execution_on_classifier))
+    def print_summary(self):
+        self.print_evaluation_normalised_NRMSE()
+        self.print_NRMSE()
+        self.print_time_train_models()
+        self.print_query_execution_time()
+        self.logger.critical("----------------------------------------------------------------------------------------")
+        self.logger.critical("----------------------------------------------------------------------------------------")
 
 def NRMSE(xs, labels):
     """
@@ -515,7 +613,7 @@ def split_data(data_source):
         print(len(training_data_classifier.labels))
         print(len(testing_data.features))
         print(len(testing_data.labels))
-        exit(0)
+        exit(-1)
 
 
 def split_data_to_2(data_source, percent=0.5):

@@ -82,41 +82,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import logging
 
-app_linear = "sklearn_linear"
-model_name0 = "sklearn_linear_model"
 
-app_poly = "sklearn_poly"
-model_name1 = "sklearn_poly_model"
-
-app_knn = "sklearn_knn"
-model_name2 = "sklearn_knn_model"
-
-app_rbf = "sklearn_svr_rbf"
-model_name3 = "sklearn_svr_rbf_model"
-
-app_mllib = "mllib_regression"
-model_name4 = "mllib_lrm_SGD_model"
-
-app_gaussian = "sklearn_gaussian_process"
-model_name5 = "sklearn_gaussian_process_model"
-
-app_adaboost = "sklearn_adaboost"
-model_name6 = "sklearn_ensemble_adaboost_model"
-
-app_boosting = "sklearn_gradient_tree_boosting"
-model_name7 = "sklearn_ensemble_gradient_tree_boosting_model"
-
-app_decision_tree = "sklearn_decision_tree"
-model_name8 = "sklearn_decision_tree_model"
-
-app_xgboost = "xgboost"
-model_name9 = "xgboost_model"
-
-CPM_name = "Classified Prediction Method"
-base_model_library = ["sklearn_linear", "sklearn_poly", "sklearn_decision_tree", "sklearn_knn",
-                      "sklearn_svr_rbf", "mllib_regression", "sklearn_gaussian_process",
-                      "sklearn_adaboost", "sklearn_gradient_tree_boosting", "xgboost"]
-ensemble_model_library = ["sklearn_adaboost", "sklearn_gradient_tree_boosting", "xgboost"]
 
 r = ColorArray('red')
 g = ColorArray((0, 1, 0, 1))
@@ -131,7 +97,8 @@ markers_matplotlib = ['*', '1', 'v', 'o', 'h', 'X']
 
 
 class ClientClass:
-    def __init__(self, logger_name=None, base_models=None, ensemble_models=None,classifier_type="xgboost",b_show_plot=False):
+    def __init__(self, logger_name=None, base_models=None, ensemble_models=None, classifier_type="xgboost",
+                 b_show_plot=False):
         """
 
         Parameters
@@ -177,6 +144,7 @@ class ClientClass:
 
         self.classifier_type = classifier_type
         self.b_show_plot = b_show_plot
+
 
 
         # logging.basicConfig(level=logging.ERROR)
@@ -390,7 +358,7 @@ class ClientClass:
             reg.fit(X, y)
             end = datetime.now()
             time_train = (end - start).total_seconds()
-            self.logger.debug("Sucessfully deployed " + app_linear)
+            self.logger.debug("Sucessfully deployed " + dt.app_linear)
             self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
 
             return reg, time_train
@@ -399,7 +367,7 @@ class ClientClass:
             return sklearn_linear_model.predict(inputs)
 
         sklearn_linear_model, time_train = train_sklearn_linear_regression(training_data)
-        return sklearn_linear_model, app_linear, time_train
+        return sklearn_linear_model, dt.app_linear, time_train
 
     def deploy_model_sklearn_poly_regression(self, training_data):
         def train_sklearn_poly_regression(trainingData):
@@ -411,7 +379,7 @@ class ClientClass:
             model.fit(X, y)
             end = datetime.now()
             time_train = (end - start).total_seconds()
-            self.logger.debug("Sucessfully deployed " + app_poly)
+            self.logger.debug("Sucessfully deployed " + dt.app_poly)
             self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
 
             return model, time_train
@@ -420,7 +388,7 @@ class ClientClass:
             return sklearn_poly_model.predict(inputs)
 
         sklearn_poly_model, time_train = train_sklearn_poly_regression(training_data)
-        return sklearn_poly_model, app_poly, time_train
+        return sklearn_poly_model, dt.app_poly, time_train
 
     def deploy_model_sklearn_knn_regression(self, training_data):
         def train_sklearn_knn_regression(trainingData):
@@ -434,7 +402,7 @@ class ClientClass:
 
             end = datetime.now()
             time_train = (end - start).total_seconds()
-            self.logger.debug("Sucessfully deployed " + app_knn)
+            self.logger.debug("Sucessfully deployed " + dt.app_knn)
             self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
 
             return knn, time_train
@@ -444,7 +412,7 @@ class ClientClass:
 
         # global sklearn_knn_model
         sklearn_knn_model, time_train = train_sklearn_knn_regression(training_data)
-        return sklearn_knn_model, app_knn, time_train
+        return sklearn_knn_model, dt.app_knn, time_train
 
     def deploy_model_sklearn_svr_rbf_regression(self, training_data):
         def train_sklearn_rbf_regression(trainingData):
@@ -456,7 +424,7 @@ class ClientClass:
             svr_rbf.fit(X, y)
             end = datetime.now()
             time_train = (end - start).total_seconds()
-            self.logger.debug("Sucessfully deployed " + app_rbf)
+            self.logger.debug("Sucessfully deployed " + dt.app_rbf)
             self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
 
             return svr_rbf, time_train
@@ -466,7 +434,7 @@ class ClientClass:
 
         sklearn_rbf_model, time_train = train_sklearn_rbf_regression(training_data)
 
-        return sklearn_rbf_model, app_rbf, time_train
+        return sklearn_rbf_model, dt.app_rbf, time_train
 
     def deploy_model_sklearn_gaussion_process_regression(self, training_data):
         def train_sklearn_gp_regression(trainingData):
@@ -480,7 +448,7 @@ class ClientClass:
             gp.fit(X, y)
             end = datetime.now()
             time_train = (end - start).total_seconds()
-            self.logger.debug("Sucessfully deployed " + app_gaussian)
+            self.logger.debug("Sucessfully deployed " + dt.app_gaussian)
             self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
 
             return gp, time_train
@@ -491,7 +459,7 @@ class ClientClass:
         # global sklearn_gp_models
         sklearn_gp_model, time_train = train_sklearn_gp_regression(training_data)
 
-        return sklearn_gp_model, app_gaussian, time_train
+        return sklearn_gp_model, dt.app_gaussian, time_train
 
     def deploy_model_sklearn_ensemble_adaboost(self, training_data):
         def train_sklearn_ensemble_adaboost(trainingData):
@@ -503,7 +471,7 @@ class ClientClass:
             reg.fit(X, y)
             end = datetime.now()
             time_train = (end - start).total_seconds()
-            self.logger.debug("Sucessfully deployed " + app_adaboost)
+            self.logger.debug("Sucessfully deployed " + dt.app_adaboost)
             self.logger.debug("Time cost to train the model is : %.2f s." % (end - start).total_seconds())
 
             return reg, time_train
@@ -512,7 +480,7 @@ class ClientClass:
             return sklearn_adaboost_model.predict(inputs)
 
         sklearn_adaboost_model, time_train = train_sklearn_ensemble_adaboost(training_data)
-        return sklearn_adaboost_model, app_adaboost, time_train
+        return sklearn_adaboost_model, dt.app_adaboost, time_train
 
     def deploy_model_sklearn_ensemble_gradient_tree_boosting(self, training_data):
         def train_sklearn_ensemble_gradient_tree_boosting(trainingData):
@@ -525,7 +493,7 @@ class ClientClass:
 
             end = datetime.now()
             time_train = (end - start).total_seconds()
-            self.logger.debug("Sucessfully deployed " + app_boosting)
+            self.logger.debug("Sucessfully deployed " + dt.app_boosting)
             self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
 
             return reg, time_train
@@ -536,7 +504,7 @@ class ClientClass:
         # global sklearn_linear_model
         sklearn_gradient_tree_boosting_model, time_train = train_sklearn_ensemble_gradient_tree_boosting(training_data)
 
-        return sklearn_gradient_tree_boosting_model, app_boosting, time_train
+        return sklearn_gradient_tree_boosting_model, dt.app_boosting, time_train
 
     def deploy_model_sklearn_decision_tree_regression(self, training_data):
         def train_sklearn_decision_tree_regression(trainingData):
@@ -548,7 +516,7 @@ class ClientClass:
 
             end = datetime.now()
             time_train = (end - start).total_seconds()
-            self.logger.debug("Sucessfully deployed " + app_decision_tree)
+            self.logger.debug("Sucessfully deployed " + dt.app_decision_tree)
             self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
 
             return reg, time_train
@@ -558,7 +526,7 @@ class ClientClass:
 
         # global sklearn_linear_model
         sklearn_decision_tree_model, time_train = train_sklearn_decision_tree_regression(training_data)
-        return sklearn_decision_tree_model, app_decision_tree, time_train
+        return sklearn_decision_tree_model, dt.app_decision_tree, time_train
         # -------------------------------------------------------------------------------------------------
 
     def deploy_xgboost_regression(self, trainingData):
@@ -570,10 +538,10 @@ class ClientClass:
         end = datetime.now()
 
         time_train = (end - start).total_seconds()
-        self.logger.debug("Sucessfully deployed " + app_xgboost)
+        self.logger.debug("Sucessfully deployed " + dt.app_xgboost)
         self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
 
-        return reg, app_xgboost, time_train
+        return reg, dt.app_xgboost, time_train
 
         # self.apps_deployed.append(sklearn_decision_tree_model)
         # self.app_names_deployed.append(app_name8)
@@ -595,61 +563,61 @@ class ClientClass:
         else:
             self.input_ensemble_models = ["sklearn_gradient_tree_boosting", "xgboost"]
 
-        if app_linear in self.input_base_models:
+        if dt.app_linear in self.input_base_models:
             model, name, time = self.deploy_model_sklearn_linear_regression(training_data)
             self.apps_deployed.append(model)
             self.app_names_deployed.append(name)
             self.time_cost_to_train_base_models.append(time)
 
-        if app_poly in self.input_base_models:
+        if dt.app_poly in self.input_base_models:
             model, name, time = self.deploy_model_sklearn_poly_regression(training_data)
             self.apps_deployed.append(model)
             self.app_names_deployed.append(name)
             self.time_cost_to_train_base_models.append(time)
 
-        if app_knn in self.input_base_models:
+        if dt.app_knn in self.input_base_models:
             model, name, time = self.deploy_model_sklearn_knn_regression(training_data)
             self.apps_deployed.append(model)
             self.app_names_deployed.append(name)
             self.time_cost_to_train_base_models.append(time)
 
-        if app_rbf in self.input_base_models:
+        if dt.app_rbf in self.input_base_models:
             model, name, time = self.deploy_model_sklearn_svr_rbf_regression(training_data)
             self.apps_deployed.append(model)
             self.app_names_deployed.append(name)
             self.time_cost_to_train_base_models.append(time)
 
-        if app_decision_tree in self.input_base_models:
+        if dt.app_decision_tree in self.input_base_models:
             model, name, time = self.deploy_model_sklearn_decision_tree_regression(training_data)
             self.apps_deployed.append(model)
             self.app_names_deployed.append(name)
             self.time_cost_to_train_base_models.append(time)
 
-        if app_mllib in self.input_base_models:
+        if dt.app_mllib in self.input_base_models:
             model, name, time = self.deploy_model_mllib_regression(training_data)
             self.apps_deployed.append(model)
             self.app_names_deployed.append(name)
             self.time_cost_to_train_base_models.append(time)
 
-        if app_gaussian in self.input_base_models:
+        if dt.app_gaussian in self.input_base_models:
             model, name, time = self.deploy_model_sklearn_gaussion_process_regression(training_data)
             self.apps_deployed.append(model)
             self.app_names_deployed.append(name)
             self.time_cost_to_train_base_models.append(time)
 
-        if app_adaboost in self.input_base_models:
+        if dt.app_adaboost in self.input_base_models:
             model, name, time = self.deploy_model_sklearn_ensemble_adaboost(training_data)
             self.apps_deployed.append(model)
             self.app_names_deployed.append(name)
             self.time_cost_to_train_base_models.append(time)
 
-        if app_boosting in self.input_base_models:
+        if dt.app_boosting in self.input_base_models:
             model, name, time = self.deploy_model_sklearn_ensemble_gradient_tree_boosting(training_data)
             self.apps_deployed.append(model)
             self.app_names_deployed.append(name)
             self.time_cost_to_train_base_models.append(time)
 
-        if app_xgboost in self.input_base_models:
+        if dt.app_xgboost in self.input_base_models:
             model, name, time = self.deploy_xgboost_regression(training_data)
             self.apps_deployed.append(model)
             self.app_names_deployed.append(name)
@@ -660,19 +628,19 @@ class ClientClass:
     def deploy_ensemble_methods(self, training_data):
         self.time_cost_to_train_ensemble_models = []
 
-        if app_adaboost in self.input_ensemble_models:
+        if dt.app_adaboost in self.input_ensemble_models:
             model, name, time = self.deploy_model_sklearn_ensemble_adaboost(training_data)
             self.ensemble_models_deployed.append(model)
             self.ensemble_method_names.append(name)
             self.time_cost_to_train_ensemble_models.append(time)
 
-        if app_boosting in self.input_ensemble_models:
+        if dt.app_boosting in self.input_ensemble_models:
             model, name, time = self.deploy_model_sklearn_ensemble_gradient_tree_boosting(training_data)
             self.ensemble_models_deployed.append(model)
             self.ensemble_method_names.append(name)
             self.time_cost_to_train_ensemble_models.append(time)
 
-        if app_xgboost in self.input_ensemble_models:
+        if dt.app_xgboost in self.input_ensemble_models:
             model, name, time = self.deploy_xgboost_regression(training_data)
             self.ensemble_models_deployed.append(model)
             self.ensemble_method_names.append(name)
@@ -770,6 +738,7 @@ class ClientClass:
 
         end = datetime.now()
         self.logger.debug("Total time spent: %.4f s." % (end - start).total_seconds())
+        self.classifier_name = dt.classifier_linear_name
         return classifier, (end - start).total_seconds()
 
     def build_classifier_rbf(self, training_data_classifier, y_classifier, C=1):
@@ -790,7 +759,7 @@ class ClientClass:
 
         end = datetime.now()
         self.logger.debug("Total time spent: %.4f s." % (end - start).total_seconds())
-
+        self.classifier_name = dt.classifier_rbf_name
         return classifier, (end - start).total_seconds()
 
     def build_classifier_xgboost(self, training_data_classifier, y_classifier):
@@ -812,7 +781,7 @@ class ClientClass:
 
         end = datetime.now()
         self.logger.debug("Total time to train xgboost classifier is: %.4f s." % (end - start).total_seconds())
-
+        self.classifier_name = dt.classifier_xgboost_name
         return classifier, (end - start).total_seconds()
 
     def get_cluster_points(self, model_number, y_classifier, training_points_features):
@@ -844,7 +813,7 @@ class ClientClass:
         self.classifier = classifier
 
     def select_classifiers(self, training_data_classifier, y_classifier, testing_data):
-        global classifier_names_candidate
+        # global classifier_names_candidate
         classifier_names_candidate = ["Nearest Neighbors", "Linear SVM",  # "RBF SVM",
                                       "Decision Tree", "Random Forest", "Neural Net",  # "AdaBoost",
                                       "Naive Bayes", "QDA"]
@@ -899,6 +868,7 @@ class ClientClass:
             classifier = classifiers[index]
             self.logger.info("The best classifier is: " + classifier_names_candidate[index])
             self.logger.info("The best NRMSE is: " + str(NRMSEs[index]))
+            self.classifier_name = classifier_names_candidate[index]
             time_cost = time_costs[index]
 
         return classifier, NRMSEs, time_costs, time_cost  # time cost of the best classifier
@@ -1086,7 +1056,7 @@ class ClientClass:
     def run2d(self, data):
 
         data.remove_repeated_x_1d()
-        data.disorder()
+        data.disorder2d()
 
         time_program_start = datetime.now()
 
@@ -1123,15 +1093,17 @@ class ClientClass:
         # select the best classifier
         # classifier, NRMSE_classifier_selection, time_cost_to_select_classifiers, time_cost_to_train_the_best_classifier = client.select_classifiers(
         #    training_data_classifier, y_classifier, testing_data)
-        if self.classifier_type is 'xgboost':
+        if self.classifier_type is dt.classifier_xgboost_name:
             classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(training_data_classifier,
                                                                                                y_classifier)
-        if self.classifier_type is 'linear':
+        if self.classifier_type is dt.classifier_linear_name:
             classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
-                                                                                               y_classifier)
-        if self.classifier_type is 'rbf':
-            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
                                                                                        y_classifier)
+        if self.classifier_type is dt.classifier_rbf_name:
+            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
+                                                                                           y_classifier)
+
+        statistics.classifier_name=self.classifier_type
         time_train_CPM = datetime.now()
 
         statistics.s_training_time_all_models.append((
@@ -1162,7 +1134,7 @@ class ClientClass:
         # query to the classified prediction method
         predictions_classified = self.get_classified_predictions(classifier, testing_data)
         # save temparary results
-        statistics.s_model_headers.append(CPM_name)
+        statistics.s_model_headers.append(dt.CPM_name)
         statistics.NRMSE.append(predictions_classified.NRMSE())
         statistics.time_query_execution_on_classifier = predictions_classified.time_query_execution_on_classifier
         statistics.time_query_processing_all_models.append(predictions_classified.time_total)
@@ -1210,7 +1182,12 @@ class ClientClass:
         return statistics
 
     def run3d(self, data):
+
         data.remove_repeated_x_2d()
+
+        data.disorderNd()
+
+
 
         time_program_start = datetime.now()
 
@@ -1221,6 +1198,7 @@ class ClientClass:
         testing_data = testing_data  # .get_before(300000)
 
         statistics = self.summary
+        statistics.file_name = data.file
         statistics.num_of_instances = len(data)
 
         # deploy all models
@@ -1251,11 +1229,12 @@ class ClientClass:
                                                                                                y_classifier)
         if self.classifier_type is 'linear':
             classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
-                                                                                               y_classifier)
+                                                                                       y_classifier)
         if self.classifier_type is 'rbf':
             classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
-                                                                                       y_classifier)
+                                                                                           y_classifier)
 
+        statistics.classifier_name = self.classifier_type
         time_train_CPM = datetime.now()
 
         statistics.s_training_time_all_models.append((
@@ -1286,7 +1265,7 @@ class ClientClass:
         # query to the classified prediction method
         predictions_classified = self.get_classified_predictions(classifier, testing_data)
         # save temparary results
-        statistics.s_model_headers.append(CPM_name)
+        statistics.s_model_headers.append(dt.CPM_name)
         statistics.NRMSE.append(predictions_classified.NRMSE())
         statistics.time_query_execution_on_classifier = predictions_classified.time_query_execution_on_classifier
         # statistics.s_training_time_all_models.append(predictions_classified.time_total)
@@ -1337,8 +1316,8 @@ class ClientClass:
 
         return statistics
 
-    def run_all_features(self, data):
-
+    def run(self, data):
+        data.disorderNd()
         # data.remove_repeated_x_2d()
 
         time_program_start = datetime.now()
@@ -1351,6 +1330,7 @@ class ClientClass:
 
         statistics = self.summary
         statistics.num_of_instances = len(data)
+        statistics.file_name = data.file
 
         # deploy all models
         models = self.deploy_all_models(training_data_model)
@@ -1375,15 +1355,17 @@ class ClientClass:
         # select the best classifier
         # classifier, NRMSE_classifier_selection, time_cost_to_select_classifiers, time_cost_to_train_the_best_classifier = client.select_classifiers(
         #    training_data_classifier, y_classifier, testing_data)
-        if self.classifier_type is 'xgboost':
+        if self.classifier_type is dt.classifier_xgboost_name:
             classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(training_data_classifier,
                                                                                                y_classifier)
-        if self.classifier_type is 'linear':
+        if self.classifier_type is dt.classifier_linear_name:
             classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
-                                                                                               y_classifier)
-        if self.classifier_type is 'rbf':
-            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
                                                                                        y_classifier)
+        if self.classifier_type is dt.classifier_rbf_name:
+            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
+                                                                                           y_classifier)
+
+        statistics.classifier_name = self.classifier_type
         time_train_CPM = datetime.now()
 
         statistics.s_training_time_all_models.append((
@@ -1414,7 +1396,7 @@ class ClientClass:
         # query to the classified prediction method
         predictions_classified = self.get_classified_predictions(classifier, testing_data)
         # save temparary results
-        statistics.s_model_headers.append(CPM_name)
+        statistics.s_model_headers.append(dt.CPM_name)
         statistics.NRMSE.append(predictions_classified.NRMSE())
         statistics.time_query_execution_on_classifier = predictions_classified.time_query_execution_on_classifier
         # statistics.s_training_time_all_models.append(predictions_classified.time_total)

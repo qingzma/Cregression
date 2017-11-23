@@ -3,21 +3,21 @@
 
 -----------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------
-Dataset: 5Folds5x2_pp.csv
+Dataset: 5Folds5x2_pp.csv, classifier is: xgboost
 Calculation Summary:
 -----------------------------------------------------------------------------------------------------------
 Model: ['sklearn_linear', 'sklearn_poly', 'Classified Prediction Method', 'sklearn_gradient_tree_boosting', 'xgboost']
-NRMSE: [0.21897839310388417, 0.21875644682375331, 0.21917707246459878, 0.21868842571669234, 0.22173294087768644]
-Normalised NRMSE: [0.9990935212407005, 0.99808088667251726, 1.0, 0.99777053894181666, 1.01166120335648]
-The lower boundary of the NRMSE is: 0.21213091195
+NRMSE: [0.21590352977869356, 0.21647770839291261, 0.21612903377653406, 0.21673251584443043, 0.21771934696920953]
+Normalised NRMSE: [0.9989566233009044, 1.0016132706017604, 1.0, 1.0027922304437835, 1.0073581654666526]
+The lower boundary of the NRMSE is: 0.210276105773
 
-Time cost (seconds) to train the models: [0.000821, 0.001232, 0.201117, 0.014795, 0.015504]
-Time cost (seconds) to train the linear classifier is: 0.020375
-Classifier accuracy is 0.538613861386
+Time cost (seconds) to train the models: [0.000659, 0.001258, 0.19376, 0.014921, 0.015534]
+Time cost (seconds) to train the linear classifier is: 0.019839
+Classifier accuracy is 0.533333333333
 
-Average time cost(ms)  on the classifier is: 0.0990158415842
-Average time (ms) to process the queries is: [0.024910231023102313, 0.08972871287128713, 0.1758963696369637, 0.05046600660066007, 0.1928792079207921]
-Total time cost(s) to process queries of each model: [0.037739, 0.135939, 0.266483, 0.076456, 0.292212]
+Average time cost(ms)  on the classifier is: 0.0959412541254
+Average time (ms) to process the queries is: [0.020719471947194718, 0.08945214521452145, 0.1870785478547855, 0.049840264026402646, 0.18813993399339932]
+Total time cost(s) to process queries of each model: [0.03139, 0.13552, 0.283424, 0.075508, 0.285032]
 Number of instances in the testing dataset is 1515
 Number of instances in the dataset is 4546
 
