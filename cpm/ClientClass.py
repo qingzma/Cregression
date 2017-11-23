@@ -98,7 +98,7 @@ markers_matplotlib = ['*', '1', 'v', 'o', 'h', 'X']
 
 class ClientClass:
     def __init__(self, logger_name=None, base_models=None, ensemble_models=None, classifier_type="xgboost",
-                 b_show_plot=False):
+                 b_show_plot=False, b_disorder=False, b_select_classifier=False):
         """
 
         Parameters
@@ -144,6 +144,9 @@ class ClientClass:
 
         self.classifier_type = classifier_type
         self.b_show_plot = b_show_plot
+
+        self.b_disorder = b_disorder
+        self.b_select_classifier = b_select_classifier
 
 
 
@@ -1056,7 +1059,8 @@ class ClientClass:
     def run2d(self, data):
 
         data.remove_repeated_x_1d()
-        data.disorder2d()
+        if self.b_disorder:
+            data.disorder2d()
 
         time_program_start = datetime.now()
 
@@ -1091,19 +1095,26 @@ class ClientClass:
                                                                     # model_selection_index=index_models,
                                                                     factor=1)
         # select the best classifier
-        # classifier, NRMSE_classifier_selection, time_cost_to_select_classifiers, time_cost_to_train_the_best_classifier = client.select_classifiers(
-        #    training_data_classifier, y_classifier, testing_data)
-        if self.classifier_type is dt.classifier_xgboost_name:
-            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(training_data_classifier,
-                                                                                               y_classifier)
-        if self.classifier_type is dt.classifier_linear_name:
-            classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
-                                                                                       y_classifier)
-        if self.classifier_type is dt.classifier_rbf_name:
-            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
-                                                                                           y_classifier)
 
-        statistics.classifier_name=self.classifier_type
+        if not self.b_select_classifier:
+            if self.classifier_type is dt.classifier_xgboost_name:
+                classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(
+                    training_data_classifier,
+                    y_classifier)
+            if self.classifier_type is dt.classifier_linear_name:
+                classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
+                                                                                           y_classifier)
+            if self.classifier_type is dt.classifier_rbf_name:
+                classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
+                                                                                               y_classifier)
+            statistics.classifier_name = self.classifier_type
+        else:
+            classifier, NRMSE_classifier_selection, time_cost_to_select_classifiers, time_cost_to_train_the_best_classifier = self.select_classifiers(
+                training_data_classifier, y_classifier, testing_data)
+            statistics.classifier_name = self.classifier_name
+
+
+
         time_train_CPM = datetime.now()
 
         statistics.s_training_time_all_models.append((
@@ -1185,7 +1196,8 @@ class ClientClass:
 
         data.remove_repeated_x_2d()
 
-        data.disorderNd()
+        if self.b_disorder:
+            data.disorderNd()
 
 
 
@@ -1222,19 +1234,23 @@ class ClientClass:
                                                                     # model_selection_index=index_models,
                                                                     factor=1)
         # select the best classifier
-        # classifier, NRMSE_classifier_selection, time_cost_to_select_classifiers, time_cost_to_train_the_best_classifier = client.select_classifiers(
-        #    training_data_classifier, y_classifier, testing_data)
-        if self.classifier_type is 'xgboost':
-            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(training_data_classifier,
-                                                                                               y_classifier)
-        if self.classifier_type is 'linear':
-            classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
-                                                                                       y_classifier)
-        if self.classifier_type is 'rbf':
-            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
+        if not self.b_select_classifier:
+            if self.classifier_type is dt.classifier_xgboost_name:
+                classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(
+                    training_data_classifier,
+                    y_classifier)
+            if self.classifier_type is dt.classifier_linear_name:
+                classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
                                                                                            y_classifier)
+            if self.classifier_type is dt.classifier_rbf_name:
+                classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
+                                                                                               y_classifier)
+            statistics.classifier_name = self.classifier_type
+        else:
+            classifier, NRMSE_classifier_selection, time_cost_to_select_classifiers, time_cost_to_train_the_best_classifier = self.select_classifiers(
+                training_data_classifier, y_classifier, testing_data)
+            statistics.classifier_name = self.classifier_name
 
-        statistics.classifier_name = self.classifier_type
         time_train_CPM = datetime.now()
 
         statistics.s_training_time_all_models.append((
@@ -1317,8 +1333,8 @@ class ClientClass:
         return statistics
 
     def run(self, data):
-        data.disorderNd()
-        # data.remove_repeated_x_2d()
+        if self.b_disorder:
+            data.disorderNd()
 
         time_program_start = datetime.now()
 
@@ -1353,19 +1369,23 @@ class ClientClass:
                                                                     # model_selection_index=index_models,
                                                                     factor=1)
         # select the best classifier
-        # classifier, NRMSE_classifier_selection, time_cost_to_select_classifiers, time_cost_to_train_the_best_classifier = client.select_classifiers(
-        #    training_data_classifier, y_classifier, testing_data)
-        if self.classifier_type is dt.classifier_xgboost_name:
-            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(training_data_classifier,
-                                                                                               y_classifier)
-        if self.classifier_type is dt.classifier_linear_name:
-            classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
-                                                                                       y_classifier)
-        if self.classifier_type is dt.classifier_rbf_name:
-            classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
+        if not self.b_select_classifier:
+            if self.classifier_type is dt.classifier_xgboost_name:
+                classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(
+                    training_data_classifier,
+                    y_classifier)
+            if self.classifier_type is dt.classifier_linear_name:
+                classifier, time_cost_to_train_the_best_classifier = self.build_classifier(training_data_classifier,
                                                                                            y_classifier)
+            if self.classifier_type is dt.classifier_rbf_name:
+                classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(training_data_classifier,
+                                                                                               y_classifier)
+            statistics.classifier_name = self.classifier_type
+        else:
+            classifier, NRMSE_classifier_selection, time_cost_to_select_classifiers, time_cost_to_train_the_best_classifier = self.select_classifiers(
+                training_data_classifier, y_classifier, testing_data)
+            statistics.classifier_name = self.classifier_name
 
-        statistics.classifier_name = self.classifier_type
         time_train_CPM = datetime.now()
 
         statistics.s_training_time_all_models.append((

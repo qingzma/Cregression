@@ -38,7 +38,7 @@ class Runner:
         logger.addHandler(self.ch)
 
     # ----------------------------------------------------------------------------------------------------------------------#
-    def run2d(self, dataID, base_models=None, ensemble_models=None, classifier_type='xgboost', b_show_plot=False):
+    def run2d(self, dataID, base_models=None, ensemble_models=None, classifier_type=dt.classifier_xgboost_name, b_show_plot=False,b_disorder=False,b_select_classifier=False):
         if dataID == 1:
             # Number 1 dataset
 
@@ -133,12 +133,13 @@ class Runner:
             data = dt.load_csv("../data/8data.txt", fields, y_column, sep=',')
 
         client = ClientClass(logger_name=logger_name, base_models=base_models, ensemble_models=ensemble_models,
-                             classifier_type=classifier_type, b_show_plot=b_show_plot)
+                             classifier_type=classifier_type, b_show_plot=b_show_plot,
+                             b_select_classifier=b_select_classifier,b_disorder=b_disorder)
 
         client.run2d(data)
         return client
 
-    def run3d(self, dataID, base_models=None, ensemble_models=None, classifier_type='xgboost', b_show_plot=False):
+    def run3d(self, dataID, base_models=None, ensemble_models=None, classifier_type=dt.classifier_xgboost_name, b_show_plot=False,b_disorder=False,b_select_classifier=False):
         if dataID == 1:
             # Number 1 dataset
 
@@ -251,12 +252,13 @@ class Runner:
 
 
         client = ClientClass(logger_name=logger_name, base_models=base_models, ensemble_models=ensemble_models,
-                             classifier_type=classifier_type, b_show_plot=b_show_plot)
+                             classifier_type=classifier_type, b_show_plot=b_show_plot,
+                             b_select_classifier=b_select_classifier,b_disorder=b_disorder)
 
         client.run3d(data)
         return client
 
-    def run4d(self, dataID, base_models=None, ensemble_models=None, classifier_type='xgboost', b_show_plot=False):
+    def run4d(self, dataID, base_models=None, ensemble_models=None, classifier_type=dt.classifier_xgboost_name, b_show_plot=False,b_disorder=False,b_select_classifier=False):
         if dataID == 1:
             # Number 1 dataset
 
@@ -366,20 +368,21 @@ class Runner:
             data = dt.load_csv("../data/8data.txt", fields, y_column, sep=',')
 
         client = ClientClass(logger_name=logger_name, base_models=base_models, ensemble_models=ensemble_models,
-                             classifier_type=classifier_type, b_show_plot=b_show_plot)
+                             classifier_type=classifier_type, b_show_plot=b_show_plot,
+                             b_select_classifier=b_select_classifier,b_disorder=b_disorder)
 
         client.run(data)
         return client
 
-    def run5d(self, dataID, base_models=None, ensemble_models=None, classifier_type='xgboost', b_show_plot=False):
+    def run5d(self, dataID, base_models=None, ensemble_models=None, classifier_type=dt.classifier_xgboost_name, b_show_plot=False, b_disorder=False,b_select_classifier=False):
         if dataID == 1:
             # Number 1 dataset
 
             fields = ['duration', 'width', 'height', 'bitrate', 'framerate', 'i', 'p', 'b', 'frames', 'i_size',
                       'p_size',
                       'b_size', 'size', 'o_bitrate', 'o_framerate', 'o_width', 'o_height', 'umem', 'utime']
-            fields = ['i_size', 'umem', 'utime']
-            y_column = 1  # should be the order in the input file, not in the "fields" order.
+            fields = ['duration','width', 'i_size', 'umem', 'utime']
+            y_column = 3  # should be the order in the input file, not in the "fields" order.
             data = dt.load_csv("../data/1online_video_dataset/1transcoding_mesurment.csv", fields, y_column)
         if dataID == 2:
             # Number 2 dataset
@@ -388,6 +391,8 @@ class Runner:
 
             # fields = ["RMSD", "F2", "F7"]
             fields = ["RMSD", "F4", "F5"]
+            fields = ["RMSD", 'F3', "F4", "F5"]
+            fields = ["RMSD", 'F2','F3', "F4", "F5"]
 
             y_column = 0  # should be the order in the input file, not in the "fields" order.
             data = dt.load_csv("../data/2CASP.csv", fields, y_column)
@@ -399,20 +404,17 @@ class Runner:
             y_column = 0  # should be the order in the input file, not in the "fields" order.
             fields = ['pm2.5', 'TEMP', 'PRES']
             fields = ['pm2.5', 'TEMP', 'Iws']  # good vision
-            fields = ['pm2.5', 'PRES', 'Iws']
+            fields = ['pm2.5','DEWP', 'TEMP', 'PRES', 'Iws']
             y_column = 0  # should be the order in the input file, not in the "fields" order.
             data = dt.load_csv("../data/3PRSA_data.csv", fields, y_column)
         if dataID == 4:
             # Number 4 dataset
 
             # load the data
-            fields = ['n_tokens_title', 'n_tokens_content', 'n_unique_tokens', 'n_non_stop_unique_tokens']
-            fields = ['n_tokens_content', 'n_unique_tokens']
-            y_column = 1  # should be the order in the input file, not in the "fields" order.
-            fields = ['n_tokens_title', 'n_tokens_content', 'n_unique_tokens']
-            fields = ['n_tokens_content', 'n_unique_tokens', 'n_non_stop_unique_tokens']
+            fields = ['n_tokens_title', 'n_tokens_content', 'n_unique_tokens', 'n_non_stop_unique_tokens','num_hrefs']
+
             # fields = [ 'n_tokens_content', 'n_unique_tokens', 'n_non_stop_unique_tokens']
-            y_column = 1  # should be the order in the input file, not in the "fields" order.
+            y_column = 2  # should be the order in the input file, not in the "fields" order.
             data = dt.load_csv("../data/4OnlineNewsPopularity1.csv", fields, y_column)
         if dataID == 5:
             # Number 5 dataset
@@ -426,9 +428,9 @@ class Runner:
             fields = ['Ambient_Pressure', 'Relative_Humidity', 'energy_output']
             # fields = ['Exhaust_Vacuum', 'Ambient_Pressure', 'energy_output']
             # fields = ['Temperature', 'Exhaust_Vacuum', 'energy_output']
+            fields = ['Temperature', 'Exhaust_Vacuum', 'Ambient_Pressure', 'Relative_Humidity', 'energy_output']
 
-
-            y_column = 2  # should be the order in the input file, not in the "fields" order.
+            y_column = 4  # should be the order in the input file, not in the "fields" order.
             data = dt.load_csv("../data/5CCPP/5Folds5x2_pp.csv", fields, y_column)
         if dataID == 6:
             # Number 6 dataset
@@ -448,7 +450,7 @@ class Runner:
                       'c78', 'c79', 'c80', 'c81', 'c82', 'c83', 'c84', 'c85', 'c86', 'c87', 'c88', 'c89', 'c90']
             fields = ['year', 'c1']
             y_column = 0  # should be the order in the input file, not in the "fields" order.
-            fields = ['year', 'c1', 'c2']
+            fields = ['year', 'c1', 'c2','c3','c4']
             # fields = ['year', 'c2', 'c4']
             y_column = 0  # should be the order in the input file, not in the "fields" order.
             # data = dt.load_csv("datasets/1online_video_dataset/1transcoding_mesurment.csv",fields,y_column)
@@ -466,6 +468,7 @@ class Runner:
             y_column = 1  # should be the order in the input file, not in the "fields" order.
             fields = ['c1', 'c2', 'c4']
             fields = ['Methane_conc_(ppm)', 'c1', 'c2']
+            fields = ['Methane_conc_(ppm)', 'c1', 'c2', 'c3','c4']
             y_column = 2  # should be the order in the input file, not in the "fields" order.
             # data = dt.load_csv("datasets/1online_video_dataset/1transcoding_mesurment.csv",fields,y_column)
             data = dt.load_csv("../data/7/7ethylene_methane_with_header.csv", fields, y_column, sep=' ')
@@ -478,17 +481,18 @@ class Runner:
                       'Sub_metering_1', 'Sub_metering_2', 'Sub_metering_3', 'energy']
             # fields = ['Date',  'Global_active_power', 'Global_reactive_power', 'Voltage', 'Global_intensity',
             #          'Sub_metering_1', 'Sub_metering_2', 'Sub_metering_3']
-            fields = ['Global_active_power', 'Global_reactive_power', 'energy']
-            y_column = 2  # should be the order in the input file, not in the "fields" order.
+            fields = ['Global_active_power', 'Global_reactive_power', 'Voltage', 'Global_intensity','energy']
+            y_column = 4  # should be the order in the input file, not in the "fields" order.
             data = dt.load_csv("../data/8data.txt", fields, y_column, sep=',')
 
         client = ClientClass(logger_name=logger_name, base_models=base_models, ensemble_models=ensemble_models,
-                             classifier_type=classifier_type, b_show_plot=b_show_plot)
+                             classifier_type=classifier_type, b_show_plot=b_show_plot,
+                             b_select_classifier=b_select_classifier,b_disorder=b_disorder)
 
         client.run(data)
         return client
 
-    def runNd(self, dataID, base_models=None, ensemble_models=None, classifier_type='xgboost', b_show_plot=False):
+    def runNd(self, dataID, base_models=None, ensemble_models=None, classifier_type=dt.classifier_xgboost_name, b_show_plot=False, b_disorder=False,b_select_classifier=False):
         if dataID == 1:
             # Number 1 dataset
 
@@ -590,7 +594,8 @@ class Runner:
             data = dt.load_csv("../data/8data.txt", fields, y_column, sep=',')
 
         client = ClientClass(logger_name=logger_name, base_models=base_models, ensemble_models=ensemble_models,
-                             classifier_type=classifier_type, b_show_plot=b_show_plot)
+                             classifier_type=classifier_type, b_show_plot=b_show_plot,
+                             b_select_classifier=b_select_classifier,b_disorder=b_disorder)
 
         client.run(data)
         return client
@@ -598,56 +603,61 @@ class Runner:
 
     # ----------------------------------------------------------------------------------------------------------------------#
     def run2d_all(self, base_models=None, ensemble_models=None,
-                  classifier_type=dt.classifier_xgboost_name, b_show_plot=None):
+                  classifier_type=dt.classifier_xgboost_name, b_show_plot=None, b_disorder=False,b_select_classifier=False):
         clients = []
         for i in range(self.num_dataset):
             client = self.run2d(i + 1, base_models=base_models, ensemble_models=ensemble_models,
                                 classifier_type=classifier_type,
-                                b_show_plot=b_show_plot)
+                                b_show_plot=b_show_plot,
+                             b_select_classifier=b_select_classifier,b_disorder=b_disorder)
             clients.append(client)
         evaluation = dt.Evaluation(clients, logger_name)
         evaluation.print_summary()
 
     def run3d_all(self, base_models=None, ensemble_models=None,
-                  classifier_type=dt.classifier_xgboost_name, b_show_plot=None):
+                  classifier_type=dt.classifier_xgboost_name, b_show_plot=None, b_disorder=False,b_select_classifier=False):
         clients = []
         for i in range(self.num_dataset):
             client = self.run3d(i + 1, base_models=base_models, ensemble_models=ensemble_models,
                                 classifier_type=classifier_type,
-                                b_show_plot=b_show_plot)
+                                b_show_plot=b_show_plot,
+                             b_select_classifier=b_select_classifier,b_disorder=b_disorder)
             clients.append(client)
         evaluation = dt.Evaluation(clients, logger_name)
         evaluation.print_summary()
 
     def run4d_all(self, base_models=None, ensemble_models=None,
-                  classifier_type=dt.classifier_xgboost_name, b_show_plot=None):
+                  classifier_type=dt.classifier_xgboost_name, b_show_plot=None, b_disorder=False,b_select_classifier=False):
         clients = []
         for i in range(self.num_dataset):
             client = self.run4d(i + 1, base_models=base_models, ensemble_models=ensemble_models,
                                 classifier_type=classifier_type,
-                                b_show_plot=b_show_plot)
+                                b_show_plot=b_show_plot,
+                             b_select_classifier=b_select_classifier,b_disorder=b_disorder)
             clients.append(client)
         evaluation = dt.Evaluation(clients, logger_name)
         evaluation.print_summary()
 
     def run5d_all(self, base_models=None, ensemble_models=None,
-                  classifier_type=dt.classifier_xgboost_name, b_show_plot=None):
+                  classifier_type=dt.classifier_xgboost_name, b_show_plot=None, b_disorder=False,b_select_classifier=False):
         clients = []
         for i in range(self.num_dataset):
             client = self.run5d(i + 1, base_models=base_models, ensemble_models=ensemble_models,
                                 classifier_type=classifier_type,
-                                b_show_plot=b_show_plot)
+                                b_show_plot=b_show_plot,
+                             b_select_classifier=b_select_classifier,b_disorder=b_disorder)
             clients.append(client)
         evaluation = dt.Evaluation(clients, logger_name)
         evaluation.print_summary()
 
     def runNd_all(self, base_models=None, ensemble_models=None,
-                  classifier_type=dt.classifier_xgboost_name, b_show_plot=None):
+                  classifier_type=dt.classifier_xgboost_name, b_show_plot=None, b_disorder=False,b_select_classifier=False):
         clients = []
         for i in range(self.num_dataset):
             client = self.run2d(i + 1, base_models=base_models, ensemble_models=ensemble_models,
                                 classifier_type=classifier_type,
-                                b_show_plot=b_show_plot)
+                                b_show_plot=b_show_plot,
+                             b_select_classifier=b_select_classifier,b_disorder=b_disorder)
             clients.append(client)
         evaluation = dt.Evaluation(clients, logger_name)
         evaluation.print_summary()
@@ -777,10 +787,27 @@ class Runner:
         classifier_type = dt.classifier_xgboost_name
         runner.run5d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
+    def evaluate(self):
+        self.run2d_linear()
+        self.run2d_xgb()
+        self.run2d_xgb_base_model()
+
+        self.run3d_linear()
+        self.run3d_xgb()
+        self.run3d_xgb_base_model()
+
+        self.run4d_linear()
+        self.run4d_xgb()
+        self.run4d_xgb_base_model()
+
+        # self.run5d_linear()
+        # self.run5d_xgb()
+        # self.run5d_xgb_base_model()
+
+
 
 if __name__ == "__main__":
     runner = Runner()
     #runner.run3d_linear()
-    runner.run4d_linear()
-    runner.run4d_xgb()
-    runner.run4d_xgb_base_model()
+    runner.evaluate()
+

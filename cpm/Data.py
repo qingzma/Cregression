@@ -533,27 +533,27 @@ class Evaluation:
         self.logger.critical("----------------------------------------------------------------------------------------")
         self.logger.critical("Normalised NRMSE:")
         for client in self.clients:
-            self.logger.critical(np.array2string(np.array(client.summary.ratio()),precision=4,separator=',').replace('[','').replace(']','')+', '+str(client.summary.num_of_instances))
+            self.logger.critical(np.array2string(np.array(client.summary.ratio()),separator=',',formatter={'float_kind':lambda x: "%.4f" % x}).replace('[','').replace(']','')+', '+str(client.summary.num_of_instances))
     def print_NRMSE(self):
         self.logger.critical('')
         self.logger.critical("----------------------------------------------------------------------------------------")
         self.logger.critical("NRMSE:")
         for client in self.clients:
-            self.logger.critical(np.array2string(np.array(client.summary.NRMSE),precision=4,separator=',').replace('[','').replace(']','')+', '+str(client.summary.NRMSE_ideal)+', '+str(client.summary.classifier_accuracy))
+            self.logger.critical(np.array2string(np.array(client.summary.NRMSE),separator=',',formatter={'float_kind':lambda x: "%.4f" % x}).replace('[','').replace(']','')+', '+str(client.summary.NRMSE_ideal)+', '+str(client.summary.classifier_accuracy))
     def print_time_train_models(self):
         self.logger.critical('')
         self.logger.critical("----------------------------------------------------------------------------------------")
         self.logger.critical("Time to train base models (s):")
         for client in self.clients:
             self.logger.critical(
-            np.array2string(np.array(client.summary.s_training_time_all_models), precision=4, separator=',').replace('[', '').replace(']', '')+', '+str(client.summary.time_training_classifier))
+            np.array2string(np.array(client.summary.s_training_time_all_models), separator=',',formatter={'float_kind':lambda x: "%.4f" % x}).replace('[', '').replace(']', '')+', '+str(client.summary.time_training_classifier))
     def print_query_execution_time(self):
         self.logger.critical('')
         self.logger.critical("----------------------------------------------------------------------------------------")
         self.logger.critical("Average query execution time (ms):")
         for client in self.clients:
             self.logger.critical(
-            np.array2string(np.array(client.summary.time_average_query_processing_of_all_models), precision=4, separator=',').replace('[', '').replace(']', '')+', '+str(client.summary.time_query_execution_on_classifier))
+            np.array2string(np.array(client.summary.time_average_query_processing_of_all_models), separator=',',formatter={'float_kind':lambda x: "%.4f" % x}).replace('[', '').replace(']', '')+', '+str(client.summary.time_query_execution_on_classifier))
     def print_summary(self):
         self.print_evaluation_normalised_NRMSE()
         self.print_NRMSE()
