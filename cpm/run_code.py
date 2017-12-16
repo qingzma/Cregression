@@ -7,7 +7,7 @@ import logging.config
 import json
 import logging
 
-logger_name = __file__.split(os.path.sep)[-2]
+logger_name = dt.logger_name #__file__.split(os.path.sep)[-2]
 logger = logging.getLogger(logger_name)
 
 
@@ -23,10 +23,10 @@ class Runner:
         logger.setLevel(logging.DEBUG)
         # create file handler which logs even debug messages
         self.fh = logging.FileHandler(file_name, mode='w')
-        self.fh.setLevel(logging.ERROR)
+        self.fh.setLevel(logging.DEBUG)
         # create console handler with a higher log level
         self.ch = logging.StreamHandler()
-        self.ch.setLevel(logging.INFO)
+        self.ch.setLevel(logging.DEBUG)
         # create formatter and add it to the handlers
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         formatter = logging.Formatter('%(levelname)s - %(message)s')
@@ -371,6 +371,7 @@ class Runner:
                              classifier_type=classifier_type, b_show_plot=b_show_plot,
                              b_select_classifier=b_select_classifier,b_disorder=b_disorder)
 
+
         client.run(data)
         return client
 
@@ -663,151 +664,165 @@ class Runner:
         evaluation.print_summary()
 
     # ----------------------------------------------------------------------------------------------------------------------#
-    def run2d_linear(self):
+    def run2d_linear(self,base_models,ensemble_models):
         # 2D linear
         runner.set_logging('2d_linear')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
+        # base_models = [dt.app_xgboost, dt.app_boosting]
+        # ensemble_models = [dt.app_xgboost]
         classifier_type = dt.classifier_linear_name
         runner.run2d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
-    def run2d_xgb(self):
+    def run2d_xgb(self,base_models,ensemble_models):
         # 2D xgb
         runner.set_logging('2d_xgb')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
         classifier_type = dt.classifier_xgboost_name
         runner.run2d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
-    def run2d_xgb_base_model(self):
+    def run2d_xgb_base_model(self,base_models,ensemble_models):
         # 2D xgb, using xgb boost as base model
         runner.set_logging('2d_xgb_base_model')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_xgboost]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_xgboost]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting]
         classifier_type = dt.classifier_xgboost_name
         runner.run2d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
     # ----------------------------------------------------------------------------------------------------------------------#
-    def run3d_linear(self):
+    def run3d_linear(self,base_models,ensemble_models):
         # 2D linear
         runner.set_logging('3d_linear')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
         classifier_type = dt.classifier_linear_name
         runner.run3d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
-    def run3d_xgb(self):
+    def run3d_xgb(self,base_models,ensemble_models):
         # 2D xgb
         runner.set_logging('3d_xgb')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
         classifier_type = dt.classifier_xgboost_name
         runner.run3d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
-    def run3d_xgb_base_model(self):
+    def run3d_xgb_base_model(self,base_models,ensemble_models):
         # 2D xgb, using xgb boost as base model
         runner.set_logging('3d_xgb_base_model')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_xgboost]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_xgboost]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting]
         classifier_type = dt.classifier_xgboost_name
         runner.run3d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
     # ----------------------------------------------------------------------------------------------------------------------#
-    def run4d_linear(self):
+    def run4d_linear(self,base_models,ensemble_models):
         # 2D linear
         runner.set_logging('4d_linear')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
         classifier_type = dt.classifier_linear_name
         runner.run4d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
-    def run4d_xgb(self):
+    def run4d_xgb(self,base_models,ensemble_models):
         # 2D xgb
         runner.set_logging('4d_xgb')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
         classifier_type = dt.classifier_xgboost_name
         runner.run4d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
-    def run4d_xgb_base_model(self):
+    def run4d_xgb_base_model(self,base_models,ensemble_models):
         # 2D xgb, using xgb boost as base model
         runner.set_logging('4d_xgb_base_model')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_xgboost]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_xgboost]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting]
         classifier_type = dt.classifier_xgboost_name
         runner.run4d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
     # ----------------------------------------------------------------------------------------------------------------------#
-    def runNd_linear(self):
+    def runNd_linear(self,base_models,ensemble_models):
         # 2D linear
         runner.set_logging('Nd_linear')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
         classifier_type = dt.classifier_linear_name
         runner.runNd_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
-    def runNd_xgb(self):
+    def runNd_xgb(self,base_models,ensemble_models):
         # 2D xgb
         runner.set_logging('Nd_xgb')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
         classifier_type = dt.classifier_xgboost_name
         runner.runNd_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
-    def runNd_xgb_base_model(self):
+    def runNd_xgb_base_model(self,base_models,ensemble_models):
         # 2D xgb, using xgb boost as base model
         runner.set_logging('Nd_xgb_base_model')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_xgboost]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_xgboost]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting]
         classifier_type = dt.classifier_xgboost_name
         runner.runNd_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
     # ----------------------------------------------------------------------------------------------------------------------#
-    def run5d_linear(self):
+    def run5d_linear(self,base_models,ensemble_models):
         # 2D linear
         runner.set_logging('5d_linear')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
         classifier_type = dt.classifier_linear_name
         runner.run5d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
-    def run5d_xgb(self):
+    def run5d_xgb(self,base_models,ensemble_models):
         # 2D xgb
         runner.set_logging('5d_xgb')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_decision_tree]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting, dt.app_xgboost]
         classifier_type = dt.classifier_xgboost_name
         runner.run5d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
-    def run5d_xgb_base_model(self):
+    def run5d_xgb_base_model(self,base_models,ensemble_models):
         # 2D xgb, using xgb boost as base model
         runner.set_logging('5d_xgb_base_model')
-        base_models = [dt.app_linear, dt.app_poly, dt.app_xgboost]
-        ensemble_models = [dt.app_adaboost, dt.app_boosting]
+        # base_models = [dt.app_linear, dt.app_poly, dt.app_xgboost]
+        # ensemble_models = [dt.app_adaboost, dt.app_boosting]
         classifier_type = dt.classifier_xgboost_name
         runner.run5d_all(base_models=base_models, ensemble_models=ensemble_models, classifier_type=classifier_type)
 
-    def evaluate(self):
-        self.run2d_linear()
-        self.run2d_xgb()
-        self.run2d_xgb_base_model()
+    def evaluate(self,base_models,ensemble_models):
 
-        self.run3d_linear()
-        self.run3d_xgb()
-        self.run3d_xgb_base_model()
+        self.run2d_linear(base_models,ensemble_models)
+        self.run2d_xgb(base_models,ensemble_models)
+        self.run2d_xgb_base_model(base_models,ensemble_models)
 
-        self.run4d_linear()
-        self.run4d_xgb()
-        self.run4d_xgb_base_model()
+        self.run3d_linear(base_models,ensemble_models)
+        self.run3d_xgb(base_models,ensemble_models)
+        self.run3d_xgb_base_model(base_models,ensemble_models)
 
-        # self.run5d_linear()
-        # self.run5d_xgb()
-        # self.run5d_xgb_base_model()
+        self.run4d_linear(base_models,ensemble_models)
+        self.run4d_xgb(base_models,ensemble_models)
+        self.run4d_xgb_base_model(base_models,ensemble_models)
+
+        self.run5d_linear(base_models, ensemble_models)
+        self.run5d_xgb(base_models, ensemble_models)
+        self.run5d_xgb_base_model(base_models, ensemble_models)
 
 
 
 if __name__ == "__main__":
     runner = Runner()
+    runner.set_logging('tmp_deletable')
     #runner.run3d_linear()
-    runner.evaluate()
+
+    # base_models = [dt.app_xgboost, dt.app_boosting]
+    # ensemble_models = [dt.app_xgboost]
+    # runner.evaluate(base_models,ensemble_models)
+
+
+    # base_models = [dt.app_boosting,dt.app_xgboost]#,dt.app_decision_tree]
+    base_models = [dt.app_linear, dt.app_poly,dt.app_decision_tree]
+    ensemble_models = [dt.app_xgboost]
+    runner.run4d(4,base_models,ensemble_models, dt.classifier_xgboost_name)
+    #runner.run2d_all(base_models,ensemble_models,classifier_type=dt.classifier_rbf_name,b_show_plot=False)
+    #runner.run3d_xgb(base_models,ensemble_models)
+
 

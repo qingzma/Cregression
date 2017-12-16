@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 
 from sklearn import preprocessing
 
-import pyspark
+# import pyspark
 # from pyspark.sql import SparkSession
-from pyspark.mllib.regression import LabeledPoint
+# from pyspark.mllib.regression import LabeledPoint
 
 ##import findspark
 ##findspark.init()
@@ -77,6 +77,10 @@ ensemble_model_library = ["sklearn_adaboost", "sklearn_gradient_tree_boosting", 
 classifier_linear_name = 'linear'
 classifier_rbf_name = 'rbf'
 classifier_xgboost_name = 'xgboost'
+
+
+
+logger_name = 'logger_name'
 # ----------------------------------------------------------------------------------------------------------------#
 class CPMstatistics:
     '''Store the final prediction results, the NRMSEs of different models, etc.'''
@@ -328,20 +332,20 @@ class DataSource:
     def __len__(self):
         return len(self.labels)
 
-    def toRDD(self, spark):
-        # spark = SparkSession \
-        #    .builder \
-        #   .appName("no_meaning_but_a_name") \
-        #    .getOrCreate()
-        # print(np.array(self.features))
-        # print(np.array(self.labels))
-        data = np.concatenate((np.array(self.features), np.array([self.labels]).T), axis=1)
-        # print(data)
-        df = pd.DataFrame(data)
-        s_df = spark.createDataFrame(df)
-        train_dataset_RDD = s_df.rdd.map(lambda x: LabeledPoint(x[-1], x[:-1]))
-        # spark.stop()
-        return train_dataset_RDD
+    # def toRDD(self, spark):
+    #     # spark = SparkSession \
+    #     #    .builder \
+    #     #   .appName("no_meaning_but_a_name") \
+    #     #    .getOrCreate()
+    #     # print(np.array(self.features))
+    #     # print(np.array(self.labels))
+    #     data = np.concatenate((np.array(self.features), np.array([self.labels]).T), axis=1)
+    #     # print(data)
+    #     df = pd.DataFrame(data)
+    #     s_df = spark.createDataFrame(df)
+    #     train_dataset_RDD = s_df.rdd.map(lambda x: LabeledPoint(x[-1], x[:-1]))
+    #     # spark.stop()
+    #     return train_dataset_RDD
 
     def get_before(self, n):
         data = DataSource()

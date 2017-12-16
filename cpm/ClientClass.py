@@ -11,7 +11,7 @@ import os
 import sys
 
 # Path for spark source folder
-os.environ['SPARK_HOME'] = "/home/u1796377/Program/spark-2.1.0-bin-hadoop2.7"
+#os.environ['SPARK_HOME'] = "/home/u1796377/Program/spark-2.1.0-bin-hadoop2.7"
 
 # Append pyspark  to Python Path
 sys.path.append("/home/u1796377/Program/spark-2.1.0-bin-hadoop2.7")
@@ -21,19 +21,19 @@ from collections import Counter
 from sklearn import svm
 from sklearn.svm import SVC
 
-import findspark
+#import findspark
 
-findspark.init()
-import pyspark
+#findspark.init()
+#import pyspark
 
 import subprocess32 as subprocess
 import pprint
 
 # from pyspark.mllib.classification import LogisticRegressionWithSGD
 # from pyspark.mllib.classification import SVMWithSGD
-from pyspark.mllib.regression import LinearRegressionWithSGD
+# from pyspark.mllib.regression import LinearRegressionWithSGD
 # from pyspark.mllib.tree import RandomForest
-from pyspark.mllib.regression import LabeledPoint
+# from pyspark.mllib.regression import LabeledPoint
 # from pyspark.ml.regression import GeneralizedLinearRegression
 from pyspark.sql import SparkSession
 
@@ -93,7 +93,7 @@ color3 = (0.6, 0.7, 0.5)
 color4 = (0.8, 0.9, 0.7)
 color5 = (0.9, 0.1, 0.2)
 colors_matploblib = ['b', 'c', 'y', 'm', 'r', 'g']
-markers_matplotlib = ['*', '1', 'v', 'o', 'h', 'X']
+markers_matplotlib = ['*', '1', 'v', 'o', 'h', 'x']
 
 
 class ClientClass:
@@ -129,6 +129,7 @@ class ClientClass:
         self.time_cost_to_train_base_models = []
         self.time_cost_to_train_ensemble_models = []
         self.summary = dt.CPMstatistics(logger_name=logger_name)
+        self.predictions_testing=None
 
         if logger_name is not None:
             self.logger = logging.getLogger(logger_name)
@@ -203,7 +204,7 @@ class ClientClass:
         if num_defaults > 0:
             self.logger.warning("Warning: %d of %d quries returns the default value -1." % (num_defaults, len(xs)))
 
-        self.logger.info("Total time spent: %.2f s." % (end - start).total_seconds())
+        self.logger.info("Total time spent: %.4f s." % (end - start).total_seconds())
         self.logger.info("--------------------------------------------------------------------------------------------")
 
         answer.predictions = results
@@ -333,10 +334,10 @@ class ClientClass:
         model_number = classifier.predict(X)
         return self.apps_deployed[model_number[0]].predict(np.array(x).reshape(1, -1))[0]
 
-    # parse the data in a line
-    def parsePoint(self, line):
-        values = [float(x) for x in line]
-        return LabeledPoint(values[3], values[0:3])
+    # # parse the data in a line
+    # def parsePoint(self, line):
+    #     values = [float(x) for x in line]
+    #     return LabeledPoint(values[3], values[0:3])
 
     # return the traing data and tesing data, RDD values
     def load_data(self, sc):
@@ -348,9 +349,9 @@ class ClientClass:
         return query_training_data, trainingData, testingData
 
     # -------------------------------------------------------------------------------------------------
-    def train_mllib_linear_regression_withSGD(self, trainingDataRDD):
-        return LinearRegressionWithSGD.train(trainingDataRDD, iterations=500, step=0.0000000000000001,
-                                             convergenceTol=0.0001, intercept=True)  # ,initialWeights=np.array[1.0])
+    # def train_mllib_linear_regression_withSGD(self, trainingDataRDD):
+    #     return LinearRegressionWithSGD.train(trainingDataRDD, iterations=500, step=0.0000000000000001,
+    #                                          convergenceTol=0.0001, intercept=True)  # ,initialWeights=np.array[1.0])
 
     def deploy_model_sklearn_linear_regression(self, training_data):
         def train_sklearn_linear_regression(trainingData):
@@ -362,7 +363,7 @@ class ClientClass:
             end = datetime.now()
             time_train = (end - start).total_seconds()
             self.logger.debug("Sucessfully deployed " + dt.app_linear)
-            self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
+            self.logger.debug("Time cost to train the model is : %.5f s." % time_train)
 
             return reg, time_train
 
@@ -383,7 +384,7 @@ class ClientClass:
             end = datetime.now()
             time_train = (end - start).total_seconds()
             self.logger.debug("Sucessfully deployed " + dt.app_poly)
-            self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
+            self.logger.debug("Time cost to train the model is : %.5f s." % time_train)
 
             return model, time_train
 
@@ -406,7 +407,7 @@ class ClientClass:
             end = datetime.now()
             time_train = (end - start).total_seconds()
             self.logger.debug("Sucessfully deployed " + dt.app_knn)
-            self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
+            self.logger.debug("Time cost to train the model is : %.5f s." % time_train)
 
             return knn, time_train
 
@@ -428,7 +429,7 @@ class ClientClass:
             end = datetime.now()
             time_train = (end - start).total_seconds()
             self.logger.debug("Sucessfully deployed " + dt.app_rbf)
-            self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
+            self.logger.debug("Time cost to train the model is : %.5f s." % time_train)
 
             return svr_rbf, time_train
 
@@ -452,7 +453,7 @@ class ClientClass:
             end = datetime.now()
             time_train = (end - start).total_seconds()
             self.logger.debug("Sucessfully deployed " + dt.app_gaussian)
-            self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
+            self.logger.debug("Time cost to train the model is : %.5f s." % time_train)
 
             return gp, time_train
 
@@ -475,7 +476,7 @@ class ClientClass:
             end = datetime.now()
             time_train = (end - start).total_seconds()
             self.logger.debug("Sucessfully deployed " + dt.app_adaboost)
-            self.logger.debug("Time cost to train the model is : %.2f s." % (end - start).total_seconds())
+            self.logger.debug("Time cost to train the model is : %.5f s." % (end - start).total_seconds())
 
             return reg, time_train
 
@@ -497,7 +498,7 @@ class ClientClass:
             end = datetime.now()
             time_train = (end - start).total_seconds()
             self.logger.debug("Sucessfully deployed " + dt.app_boosting)
-            self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
+            self.logger.debug("Time cost to train the model is : %.5f s." % time_train)
 
             return reg, time_train
 
@@ -520,7 +521,7 @@ class ClientClass:
             end = datetime.now()
             time_train = (end - start).total_seconds()
             self.logger.debug("Sucessfully deployed " + dt.app_decision_tree)
-            self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
+            self.logger.debug("Time cost to train the model is : %.5f s." % time_train)
 
             return reg, time_train
 
@@ -542,7 +543,7 @@ class ClientClass:
 
         time_train = (end - start).total_seconds()
         self.logger.debug("Sucessfully deployed " + dt.app_xgboost)
-        self.logger.debug("Time cost to train the model is : %.2f s." % time_train)
+        self.logger.debug("Time cost to train the model is : %.5f s." % time_train)
 
         return reg, dt.app_xgboost, time_train
 
@@ -723,9 +724,9 @@ class ClientClass:
         return rankings, minimum_errors
 
     def build_classifier(self, training_data_classifier, y_classifier, C=100):
-        start = datetime.now()
-        distribution = Counter(y_classifier)
 
+        distribution = Counter(y_classifier)
+        start = datetime.now()
         if len(distribution.keys()) == 1:
             class classifier1:
                 def predict(self, x):
@@ -740,14 +741,15 @@ class ClientClass:
             classifier.fit(training_data_classifier.features, y_classifier)
 
         end = datetime.now()
-        self.logger.debug("Total time spent: %.4f s." % (end - start).total_seconds())
+        self.logger.debug("Total time to train linear classifier is: %.4f s." % (end - start).total_seconds())
         self.classifier_name = dt.classifier_linear_name
         return classifier, (end - start).total_seconds()
 
     def build_classifier_rbf(self, training_data_classifier, y_classifier, C=1):
-        start = datetime.now()
+
         distribution = Counter(y_classifier)
 
+        start = datetime.now()
         if len(distribution.keys()) == 1:
             class classifier1:
                 def predict(self, x):
@@ -761,7 +763,7 @@ class ClientClass:
             classifier.fit(training_data_classifier.features, y_classifier)
 
         end = datetime.now()
-        self.logger.debug("Total time spent: %.4f s." % (end - start).total_seconds())
+        self.logger.debug("Total time to train rbf classifier is: %.4f s." % (end - start).total_seconds())
         self.classifier_name = dt.classifier_rbf_name
         return classifier, (end - start).total_seconds()
 
@@ -878,8 +880,9 @@ class ClientClass:
 
     def matplotlib_plot_2D(self, answers, b_show_division_boundary=True, b_show_god_classifier=False, y_classifier=None,
                            xmin=None, xmax=None):
+        font_size=35
         names = self.app_names_for_classifier
-        symbols = ['*', '1', 'v', 'o', 'h', 'X']
+        symbols = ['*', '1', 'v', 'o', 'h', 'x']
         if b_show_division_boundary:
             if b_show_god_classifier:
                 gs = gridspec.GridSpec(3, 1, height_ratios=[3, 1, 1])
@@ -895,8 +898,6 @@ class ClientClass:
         # ax.plot(a, c, 'k--', label='Model length')
         # ax.plot(a, d, 'k:', label='Data length')
         # ax.plot(a, c + d, 'k', label='Total message length')
-
-
         for i in range(len(self.app_names_for_classifier)):
             # print(answers.get_vispy_plot_data(i))
             if answers.get_vispy_plot_data_2d(i) != []:
@@ -905,17 +906,21 @@ class ClientClass:
                          symbols[i],
                          label=names[i],
                          linewidth=0.0)
+        ax1.plot(answers.features[:,0],answers.labels,symbols[5],label='real data',linewidth=0.0)
+
 
         # Now add the legend with some customizations.
-        legend1 = ax1.legend(loc='upper right', shadow=True)
+        legend1 = ax1.legend(loc='upper right', shadow=True, fontsize=font_size)
 
         # The frame is matplotlib.patches.Rectangle instance surrounding the legend.
         frame = legend1.get_frame()
         frame.set_facecolor('0.90')
 
-        ax1.set_xlabel(answers.headers[0])
-        ax1.set_ylabel(answers.headers[1])
-        ax1.set_title("Classified Regression Curve")
+        ax1.set_xlabel(answers.headers[0], fontsize=font_size)
+        ax1.set_ylabel(answers.headers[1], fontsize=font_size)
+        plt.xticks(fontsize=font_size)
+        plt.yticks(fontsize=font_size)
+        #ax1.set_title("Classified Regression Curve")
         if xmin != None:
             ax1.set_xlim(xmin, xmax)
 
@@ -945,6 +950,7 @@ class ClientClass:
         if b_show_god_classifier:
             if y_classifier == None:
                 self.logger.critical("y_classifier values are not provided! Program ended!")
+                exit(1)
             for i in range(len(self.app_names_for_classifier)):
                 X, Y = dt.get_values_equal_to_(i, answers.get_vispy_plot_data_2d()[:, 0], y_classifier)
                 if X != []:
@@ -963,6 +969,64 @@ class ClientClass:
 
         return
 
+    def matplotlib_plot_2D_all_models(self, answers,answers_from_all_models,
+                           xmin=None, xmax=None):
+        font_size = 35
+        names = self.app_names_for_classifier
+        symbols = dt.markers_matplotlib
+
+        fig = plt.figure()
+        ax1 = plt.subplot()
+        # ax.plot(a, c, 'k--', label='Model length')
+        # ax.plot(a, d, 'k:', label='Data length')
+        # ax.plot(a, c + d, 'k', label='Total message length')
+
+
+        # for i in range(len(self.app_names_for_classifier)):
+        #     # print(answers.get_vispy_plot_data(i))
+        #     if answers.get_vispy_plot_data_2d(i) != []:
+        #         ax1.plot(answers.get_vispy_plot_data_2d(i)[:, 0],
+        #                  answers.get_vispy_plot_data_2d(i)[:, 1],
+        #                  symbols[i],
+        #                  label=names[i],
+        #                  linewidth=0.0)
+
+        for i in range(len(self.app_names_for_classifier)):
+            ax1.plot(answers_from_all_models[i].features[:,0],
+                     answers_from_all_models[i].predictions,
+                     symbols[i],
+                     label=names[i],
+                     linewidth=0.0
+                     )
+
+        ax1.plot(answers_from_all_models[i].features[:, 0],
+                 answers_from_all_models[i].labels,
+                 symbols[5],
+                 label='real data',
+                 linewidth=0.0
+                 )
+
+
+        # Now add the legend with some customizations.
+        legend1 = ax1.legend(loc='upper right', shadow=True, fontsize=font_size)
+
+        # The frame is matplotlib.patches.Rectangle instance surrounding the legend.
+        frame = legend1.get_frame()
+        frame.set_facecolor('0.90')
+
+        ax1.set_xlabel(answers.headers[0], fontsize=font_size)
+        ax1.set_ylabel(answers.headers[1], fontsize=font_size)
+        plt.xticks(fontsize=font_size)
+        plt.yticks(fontsize=font_size)
+        # ax1.set_title("Regression Curves of Linear and Polynomial Models")
+        if xmin != None:
+            ax1.set_xlim(xmin, xmax)
+
+
+        plt.show()
+
+        return
+
     def plot_classified_prediction_curves_2D(self, answers, knn_neighbours=None):
         fig = vp.Fig(show=False)
         color = (0.8, 0.25, 0.)
@@ -971,7 +1035,7 @@ class ClientClass:
 
         names = self.app_names_for_classifier
         colors = [r, g, blue, color1, color2, color3, color4, color5]
-        symbols = ['*', 'diamond', 'ring', 'o', '+']
+        symbols = dt.markers_matplotlib
         for i in range(len(self.app_names_for_classifier)):
             # print(answers.headers)
             # print(answers.headers[0])
@@ -991,7 +1055,7 @@ class ClientClass:
 
     def matplotlib_plot_3D(self, answers, plot_region=[]):
         names = self.app_names_for_classifier
-        symbols = ['*', '1', 'v', 'o', 'h', 'X']
+        symbols = dt.markers_matplotlib
 
         # gs = gridspec.GridSpec(3, 1, height_ratios=[3])
 
@@ -1014,7 +1078,7 @@ class ClientClass:
                          linewidth=0.0)
 
         # Now add the legend with some customizations.
-        legend1 = ax1.legend(loc='upper right', shadow=True)
+        legend1 = ax1.legend(loc='upper left', shadow=True)
 
         # The frame is matplotlib.patches.Rectangle instance surrounding the legend.
         frame = legend1.get_frame()
@@ -1034,7 +1098,7 @@ class ClientClass:
 
     def matplotlib_plot_3D_decision_boundary(self, answers, plot_region=[]):
         names = self.app_names_for_classifier
-        symbols = ['*', '1', 'v', 'o', 'h', 'X']
+        symbols = dt.markers_matplotlib
 
         fig = plt.figure()
         ax2 = plt.subplot()
@@ -1042,11 +1106,11 @@ class ClientClass:
             X, Y, Z = dt.get_values_equal_to_3D(i, answers.get_vispy_plot_data_3d(), answers.modelID)
             # print(X)
             if X != []:
-                ax2.plot(X, Y, symbols[i], label=names[i], color=colors_matploblib[i], linewidth=0.0)
-        legend2 = ax2.legend(loc='right', shadow=True)
+                ax2.plot(X, Y, symbols[i], label=names[i], color=dt.colors_matploblib[i], linewidth=0.0)
+        legend2 = ax2.legend(loc='upper left', shadow=True)
         ax2.set_xlabel(answers.headers[0])
         ax2.set_ylabel(answers.headers[1])
-        ax2.set_title("Decision boundary of the classified prediction method")
+        #ax2.set_title("Decision boundary of the classified prediction method")
         # ax2.set_yticks(np.arange(-1, max(answers.modelID) + 2, 1.0))
         # ax2.set_ylim(-1, max(answers.modelID) + 1)
         if plot_region != []:
@@ -1055,6 +1119,57 @@ class ClientClass:
         plt.show()
 
         return
+
+    def matplotlib_plot_3D_distribution_of_best_model(self, answers,y_classifier, plot_region=[]):
+        names = self.app_names_for_classifier
+        symbols = dt.markers_matplotlib
+
+        fig = plt.figure()
+        ax2 = plt.subplot()
+        for i in range(len(self.app_names_for_classifier)):
+            X, Y, Z = dt.get_values_equal_to_3D(i, answers.get_vispy_plot_data_3d(), y_classifier)
+            # print(X)
+            if X != []:
+                ax2.plot(X, Y, symbols[i], label=names[i], color=dt.colors_matploblib[i], linewidth=0.0)
+        legend2 = ax2.legend(loc='upper left', shadow=True)
+        ax2.set_xlabel(answers.headers[0])
+        ax2.set_ylabel(answers.headers[1])
+        #ax2.set_title("Decision boundary of the classified prediction method")
+        # ax2.set_yticks(np.arange(-1, max(answers.modelID) + 2, 1.0))
+        # ax2.set_ylim(-1, max(answers.modelID) + 1)
+        if plot_region != []:
+            ax2.set_xlim(plot_region[0:2])
+            ax2.set_ylim(plot_region[2:4])
+        plt.show()
+
+        return
+
+    def boxplot(self,predictions_from_base_models,classified_predictions,y_classifier):
+        num_of_plot=len(predictions_from_base_models)+1
+        labels=classified_predictions.labels
+        data_to_plot=[]
+        variance=[]
+        xlabels=self.input_base_models
+        #print(xlabels)
+        for i in range(num_of_plot-1):
+            data_to_plot.append(np.subtract(np.asarray(predictions_from_base_models[i].predictions),np.asarray(labels)))
+            variance.append(np.var(np.subtract(np.asarray(predictions_from_base_models[i].predictions),np.asarray(labels))))
+
+        data_to_plot.append(np.subtract(np.asarray(classified_predictions.predictions),np.asarray(labels)))
+        variance.append(np.var(np.subtract(np.asarray(classified_predictions.predictions),np.asarray(labels))))
+        #variance.append(np.var(np.subtract(np.asarray(classified_predictions.predictions),np.asarray(y_classifier))))
+        xlabels.append("classified")
+        fig = plt.figure(1)     #, figsize=(9, 6))
+        ax = fig.add_subplot(111)
+        # Create the boxplot
+        bp = ax.boxplot(data_to_plot, showfliers=False,showmeans=True)
+        ax.set_xticklabels(xlabels)
+        ax.set_ylabel("absolute error")
+        plt.show()
+        return variance
+
+
+
 
     def run2d(self, data):
 
@@ -1188,8 +1303,11 @@ class ClientClass:
         #                             y_classifier=y_classifier)
 
         if self.b_show_plot:
-            self.matplotlib_plot_2D(predictions_classified)
+            self.matplotlib_plot_2D(predictions_classified,b_show_division_boundary=True,b_show_god_classifier=True,y_classifier=y_classifier_testing)
 
+        self.predictions_testing=answers_for_testing
+
+        #self.matplotlib_plot_2D_all_models(predictions_classified,answers_for_testing)
         return statistics
 
     def run3d(self, data):
@@ -1233,6 +1351,8 @@ class ClientClass:
         y_classifier, errors = self.init_classifier_training_values(answers_for_classifier,
                                                                     # model_selection_index=index_models,
                                                                     factor=1)
+
+
         # select the best classifier
         if not self.b_select_classifier:
             if self.classifier_type is dt.classifier_xgboost_name:
@@ -1251,6 +1371,9 @@ class ClientClass:
                 training_data_classifier, y_classifier, testing_data)
             statistics.classifier_name = self.classifier_name
 
+
+
+
         time_train_CPM = datetime.now()
 
         statistics.s_training_time_all_models.append((
@@ -1262,6 +1385,9 @@ class ClientClass:
         # statistics.classifier_name = client.classifier_names_candidate[index]
         # statistics.time_training_classifiers = list(time_cost_to_select_classifiers)
         statistics.time_training_classifier = time_cost_to_train_the_best_classifier
+
+
+
 
         '''
         cc=ClientClass()
@@ -1327,9 +1453,11 @@ class ClientClass:
 
 
         if self.b_show_plot:
+            self.matplotlib_plot_3D_distribution_of_best_model(predictions_classified, y_classifier_testing)
             self.matplotlib_plot_3D(predictions_classified)
-        # client.matplotlib_plot_3D_decision_boundary(predictions_classified)
+            self.matplotlib_plot_3D_decision_boundary(predictions_classified)
 
+        self.predictions_testing = answers_for_testing
         return statistics
 
     def run(self, data):
@@ -1352,6 +1480,8 @@ class ClientClass:
         models = self.deploy_all_models(training_data_model)
         statistics.s_training_time_all_models = list(self.time_cost_to_train_base_models)
 
+
+
         # get predictions to build the classifier
         answers_for_classifier = self.get_predictions_to_build_classifier(training_data_classifier)
         # save tempary results
@@ -1368,6 +1498,26 @@ class ClientClass:
         y_classifier, errors = self.init_classifier_training_values(answers_for_classifier,
                                                                     # model_selection_index=index_models,
                                                                     factor=1)
+
+
+        #########################################################
+
+        # classifier, time_cost_to_train_the_best_classifier = self.build_classifier(
+        #     training_data_classifier,
+        #     y_classifier)
+        #
+        #
+        #
+        # classifier, time_cost_to_train_the_best_classifier = self.build_classifier_xgboost(
+        #     training_data_classifier,
+        #     y_classifier)
+
+        # classifier, time_cost_to_train_the_best_classifier = self.build_classifier_rbf(
+        #     training_data_classifier,
+        #     y_classifier)
+        #
+        # exit(1)
+        ########################################################
         # select the best classifier
         if not self.b_select_classifier:
             if self.classifier_type is dt.classifier_xgboost_name:
@@ -1397,6 +1547,11 @@ class ClientClass:
         # statistics.classifier_name = client.classifier_names_candidate[index]
         # statistics.time_training_classifiers = list(time_cost_to_select_classifiers)
         statistics.time_training_classifier = time_cost_to_train_the_best_classifier
+
+
+
+
+
 
         '''
         cc=ClientClass()
@@ -1465,6 +1620,9 @@ class ClientClass:
         # client.matplotlib_plot_3D(predictions_classified)
         # client.matplotlib_plot_3D_decision_boundary(predictions_classified)
 
+        self.predictions_testing = answers_for_testing
+
+        print(self.boxplot(answers_for_testing,predictions_classified,y_classifier_testing))
         return statistics
 
 
